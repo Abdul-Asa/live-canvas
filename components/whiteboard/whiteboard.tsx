@@ -40,11 +40,8 @@ const Whiteboard = () => {
   const [canvas, setCanvas] = useAtom(canvasAtom);
 
   useEffect(() => {
-    const notes = generateNotes();
     const stickers = generateStickers();
-    const newCanvas = new Map(
-      [...notes, ...stickers].map((item) => [item.id, item])
-    );
+    const newCanvas = new Map([...stickers].map((item) => [item.id, item]));
     setCanvas(newCanvas);
   }, []);
 

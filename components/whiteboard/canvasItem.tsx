@@ -1,10 +1,16 @@
-// CanvasItem.tsx
-import { canvasAtom, canvasRefAtom, cursorAtom } from "@/lib/jotai-state";
+"use client";
+import {
+  canvasAtom,
+  canvasRefAtom,
+  cursorAtom,
+  selectedLayerAtom,
+} from "@/lib/jotai-state";
 import { CanvasLayer, CanvasLayerType, Polaroid, Sticker } from "@/lib/type";
+import { cn } from "@/lib/utils";
 import { PanInfo, motion } from "framer-motion";
 import { useAtom, useAtomValue } from "jotai";
 import Image from "next/image";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 
 const CanvasItem: React.FC<{ canvasLayer: CanvasLayer }> = ({
   canvasLayer,
@@ -23,6 +29,7 @@ const StickerComponent: React.FC<{ sticker: Sticker }> = ({ sticker }) => {
   const [canvasList, updateCanvasList] = useAtom(canvasAtom);
   const cursor = useAtomValue(cursorAtom);
   const canvasRef = useAtomValue(canvasRefAtom);
+  const [selected, setSelected] = useAtom(selectedLayerAtom);
   const stickerRef = useRef<HTMLDivElement>(null);
 
   const handleDoubleClick = () => {
@@ -52,7 +59,7 @@ const StickerComponent: React.FC<{ sticker: Sticker }> = ({ sticker }) => {
     if (!canvasList.get(id)) return;
     const stickerRect = stickerRef.current?.getBoundingClientRect();
     if (!stickerRect) return;
-    
+
     if (event instanceof MouseEvent || event instanceof PointerEvent) {
       const offsetX = event.clientX - stickerRect.left;
       const offsetY = event.clientY - stickerRect.top;
@@ -71,7 +78,10 @@ const StickerComponent: React.FC<{ sticker: Sticker }> = ({ sticker }) => {
   return (
     <motion.div
       ref={stickerRef}
-      className="border border-blue-400 mix-blend-multiply filter"
+      className={cn(
+        " mix-blend-multiply filter",
+        selected === id && "border border-blue-500"
+      )}
       drag
       dragConstraints={canvasRef !== null ? canvasRef : false}
       dragMomentum={false}
@@ -85,8 +95,10 @@ const StickerComponent: React.FC<{ sticker: Sticker }> = ({ sticker }) => {
       }}
       onDoubleClick={handleDoubleClick}
       onContextMenu={handleRightClick}
+      onPointerDown={() => {
+        setSelected(id);
+      }}
     >
-      {x.toFixed(0)}: {y.toFixed(0)}
       {src.endsWith(".json") ? (
         <lottie-player
           autoplay
@@ -110,37 +122,63 @@ const StickerComponent: React.FC<{ sticker: Sticker }> = ({ sticker }) => {
 
 const PolaroidComponent: React.FC<{ polaroid: Polaroid }> = ({ polaroid }) => {
   const canvasRef = useAtomValue(canvasRefAtom);
-  // Basic structure for a polaroid component
-  // You would add more styling and potentially more structure to make it look
-  // like the example image you provided
+  const { x, y, id } = polaroid;
+  const [canvasList, updateCanvasList] = useAtom(canvasAtom);
+  const cursor = useAtomValue(cursorAtom);
+  const [selected, setSelected] = useAtom(selectedLayerAtom);
+  const polRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    console.log("CanvasItem mounted");
+    return () => {
+      console.log("CanvasItem unmounted");
+    };
+  }, []);
+
+  const handleDrag = (
+    event: MouseEvent | TouchEvent | PointerEvent,
+    info: PanInfo
+  ) => {
+    if (!canvasList.get(id)) return;
+    const polaroidRef = polRef.current?.getBoundingClientRect();
+    if (!polaroidRef) return;
+    if (event instanceof MouseEvent || event instanceof PointerEvent) {
+      const offsetX = event.clientX - polaroidRef.left;
+      const offsetY = event.clientY - polaroidRef.top;
+
+      updateCanvasList((prev) => {
+        prev.set(id, {
+          ...polaroid,
+          x: cursor.x - offsetX,
+          y: cursor.y - offsetY,
+        });
+        return new Map(prev);
+      });
+    }
+  };
   return (
     <motion.div
-      className="polaroid"
-      drag // Make the polaroid draggable
+      ref={polRef}
+      className={cn(" ", selected === id && "border border-blue-500")}
+      drag
       dragConstraints={canvasRef !== null ? canvasRef : false}
+      dragMomentum={false}
+      onDrag={handleDrag}
+      onPointerDown={() => {
+        setSelected(id);
+      }}
       style={{
-        x: polaroid.x,
-        y: polaroid.y,
+        x,
+        y,
         position: "absolute",
         width: "200px", // Set a fixed size or make it resizable
         height: "250px",
         backgroundColor: "white",
-        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-        zIndex: 10,
-      }}
-      onDoubleClick={() => {
-        // handle double click event if needed
+        boxShadow: "-0.6rem 0.6rem 0 rgba(29, 30, 28, 0.26)",
+        zIndex: 5,
       }}
     >
-      <div
-        className="title-bar"
-        style={{ cursor: "grab", backgroundColor: polaroid.color }}
-      >
-        {/* Draggable title bar */}
-      </div>
-      <div className="content">
-        {polaroid.x}: {polaroid.y}
-      </div>
+      {x.toFixed(0)}: {y.toFixed(0)}
     </motion.div>
   );
 };
