@@ -1,5 +1,5 @@
 // CanvasItem.tsx
-import { canvasAtom, canvasRefAtom } from "@/lib/jotai-state";
+import { canvasAtom, canvasRefAtom, cursorAtom } from "@/lib/jotai-state";
 import { CanvasLayer, CanvasLayerType, Polaroid, Sticker } from "@/lib/type";
 import { PanInfo, motion } from "framer-motion";
 import { useAtom, useAtomValue } from "jotai";
@@ -21,6 +21,7 @@ const CanvasItem: React.FC<{ canvasLayer: CanvasLayer }> = ({
 const StickerComponent: React.FC<{ sticker: Sticker }> = ({ sticker }) => {
   const { src, width, height, x, y, id } = sticker;
   const [canvasList, updateCanvasList] = useAtom(canvasAtom);
+  const cursor = useAtomValue(cursorAtom);
   const canvasRef = useAtomValue(canvasRefAtom);
   const stickerRef = useRef<HTMLDivElement>(null);
 
@@ -49,14 +50,34 @@ const StickerComponent: React.FC<{ sticker: Sticker }> = ({ sticker }) => {
     info: PanInfo
   ) => {
     if (!canvasList.get(id)) return;
-    const stickerRefCurrent = stickerRef.current;
-    if (!stickerRefCurrent) return;
-    console.log();
+    const stickerRect = stickerRef.current?.getBoundingClientRect();
+    if (!stickerRect) return;
+    if (event instanceof MouseEvent || event instanceof PointerEvent) {
+      const offsetX = event.clientX - stickerRect.left;
+      const offsetY = event.clientY - stickerRect.top;
 
-    updateCanvasList((prev) => {
-      prev.set(id, { ...sticker, x: info.point.x, y: info.point.y });
-      return new Map(prev);
-    });
+      updateCanvasList((prev) => {
+        prev.set(id, {
+          ...sticker,
+          x: cursor.x - offsetX,
+          y: cursor.y - offsetY,
+        });
+        return new Map(prev);
+      });
+    } else if (event instanceof TouchEvent) {
+      event.stopPropagation();
+      const offsetX = event.touches[0].clientX - stickerRect.left;
+      const offsetY = event.touches[0].clientY - stickerRect.top;
+
+      updateCanvasList((prev) => {
+        prev.set(id, {
+          ...sticker,
+          x: cursor.x - offsetX,
+          y: cursor.y - offsetY,
+        });
+        return new Map(prev);
+      });
+    }
   };
 
   return (
@@ -92,7 +113,7 @@ const StickerComponent: React.FC<{ sticker: Sticker }> = ({ sticker }) => {
           width={width}
           height={height}
           alt="sticker"
-          className=" select-none pointer-events-none"
+          className=" select-none pointer-events-none h-auto w-auto"
         />
       )}
     </motion.div>

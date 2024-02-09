@@ -84,7 +84,7 @@ const Canvas = ({ children }: { children: React.ReactNode }) => {
 
   //Mobile touch events
   const handleTouchMove = (event: React.TouchEvent<HTMLDivElement>) => {
-    // Only handle single-finger gestures for panning
+    if (!dragMode) return;
     if (event.touches.length === 1) {
       const touch = event.touches[0];
       setPos((prev) => {
@@ -106,6 +106,7 @@ const Canvas = ({ children }: { children: React.ReactNode }) => {
   };
 
   const handleTouchStart = (event: React.TouchEvent<HTMLDivElement>) => {
+    setDragMode(true);
     if (event.touches.length === 1) {
       const touch = event.touches[0];
       setPos((prev) => ({
@@ -127,7 +128,7 @@ const Canvas = ({ children }: { children: React.ReactNode }) => {
   return (
     <motion.div
       ref={canvasRef}
-      className="border-8 relative border-red-500 "
+      className="border-8 fixed border-red-500 "
       style={{
         height: CANVAS_SIZE,
         width: CANVAS_SIZE,
