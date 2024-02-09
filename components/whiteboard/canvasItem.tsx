@@ -52,22 +52,10 @@ const StickerComponent: React.FC<{ sticker: Sticker }> = ({ sticker }) => {
     if (!canvasList.get(id)) return;
     const stickerRect = stickerRef.current?.getBoundingClientRect();
     if (!stickerRect) return;
+    
     if (event instanceof MouseEvent || event instanceof PointerEvent) {
       const offsetX = event.clientX - stickerRect.left;
       const offsetY = event.clientY - stickerRect.top;
-
-      updateCanvasList((prev) => {
-        prev.set(id, {
-          ...sticker,
-          x: cursor.x - offsetX,
-          y: cursor.y - offsetY,
-        });
-        return new Map(prev);
-      });
-    } else if (event instanceof TouchEvent) {
-      event.stopPropagation();
-      const offsetX = event.touches[0].clientX - stickerRect.left;
-      const offsetY = event.touches[0].clientY - stickerRect.top;
 
       updateCanvasList((prev) => {
         prev.set(id, {
