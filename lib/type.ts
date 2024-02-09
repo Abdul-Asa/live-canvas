@@ -16,6 +16,8 @@ export type CanvasLayer = Sticker | Polaroid;
 export interface Position {
   x: number;
   y: number;
+  lastX?: number;
+  lastY?: number;
 }
 
 interface Sticker {
