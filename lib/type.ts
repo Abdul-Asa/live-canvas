@@ -3,10 +3,10 @@ export interface Editor {
   cursor: Position;
   canvas: Map<string, CanvasLayer>;
   selectedLayer: string | null;
-  isDragging: boolean;
+  dragMode: boolean;
 }
 
-enum CanvasLayerType {
+export enum CanvasLayerType {
   STICKER = "sticker",
   POLAROID = "polaroid",
 }
@@ -20,7 +20,7 @@ export interface Position {
   lastY?: number;
 }
 
-interface Sticker {
+export interface Sticker {
   type: CanvasLayerType.STICKER;
   id: string;
   x: number;
@@ -30,7 +30,7 @@ interface Sticker {
   width: number;
 }
 
-interface Polaroid {
+export interface Polaroid {
   type: CanvasLayerType.POLAROID;
   id: string;
   x: number;
