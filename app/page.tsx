@@ -12,9 +12,6 @@ export default function Home() {
   const route = useRouter();
 
   //Draggable Mini map
-  //Fix Mobile out of bounds scrolling
-  //Detect Mobile cursor
-  //Add drawer for mobile minimap
   //Seperate online features
   //Add chat
   //Make my own color picker component

@@ -151,64 +151,56 @@ const UserList = () => {
             <SheetTitle>Online Users</SheetTitle>
           </SheetHeader>
           <div className="flex items-center h-10 w-full gap-10 justify-between">
-            <div className=" flex items-center justify-between w-full">
-              {editing ? (
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    nickName.length > 0 && setEditing(false);
+            {editing ? (
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  nickName.length > 0 && setEditing(false);
+                }}
+              >
+                <input
+                  ref={inputRef}
+                  autoFocus
+                  className="w-36 p-1"
+                  value={nickName}
+                  onChange={(e) => {
+                    updateMyPresence({ nickName: e.target.value });
+                    setUser((prev) => ({
+                      ...prev,
+                      nickName: e.target.value,
+                    }));
                   }}
-                >
-                  <input
-                    ref={inputRef}
-                    autoFocus
-                    className="w-36 p-1"
-                    value={nickName}
-                    onChange={(e) => {
-                      updateMyPresence({ nickName: e.target.value });
-                      setUser((prev) => ({
-                        ...prev,
-                        nickName: e.target.value,
-                      }));
-                    }}
-                    onBlur={() => {
-                      nickName.length > 0 && setEditing(false);
-                      nickName.length === 0 && inputRef.current?.focus();
-                    }}
-                  />
-                </form>
-              ) : (
-                <p className="w-36 truncate" onClick={() => setEditing(true)}>
-                  {nickName}
-                </p>
-              )}
-              <DropdownMenu>
-                <DropdownMenuTrigger>
-                  <div
-                    className="h-5 w-5 rounded border-copy border"
-                    style={{ backgroundColor: color }}
-                  />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="border-black p-0 border-2 rounded">
-                  <TwitterPicker
-                    width="140px"
-                    styles={{}}
-                    color={color}
-                    triangle="hide"
-                    onChange={(color) => {
-                      updateMyPresence({ color: color.hex });
-                      setUser((prev) => ({ ...prev, color: color.hex }));
-                    }}
-                  />
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-
-            <Minimize2
-              className=" cursor-pointer "
-              size={16}
-              onClick={() => setTrigger((prev) => !prev)}
-            />
+                  onBlur={() => {
+                    nickName.length > 0 && setEditing(false);
+                    nickName.length === 0 && inputRef.current?.focus();
+                  }}
+                />
+              </form>
+            ) : (
+              <p className="w-36 truncate" onClick={() => setEditing(true)}>
+                {nickName}
+              </p>
+            )}
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <div
+                  className="h-5 w-5 rounded border-copy border"
+                  style={{ backgroundColor: color }}
+                />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="border-black p-0 border-2 rounded">
+                <TwitterPicker
+                  width="140px"
+                  styles={{}}
+                  color={color}
+                  triangle="hide"
+                  onChange={(color) => {
+                    updateMyPresence({ color: color.hex });
+                    setUser((prev) => ({ ...prev, color: color.hex }));
+                  }}
+                />
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
           <div className="flex w-full flex-col justify-between gap-2 mt-4">

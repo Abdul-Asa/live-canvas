@@ -7,12 +7,23 @@ import { PanInfo, motion } from "framer-motion";
 import { useAtom, useAtomValue } from "jotai";
 import { useMemo, useRef, useState } from "react";
 import { Button } from "../ui/button";
-import { LockIcon } from "lucide-react";
+import { LockIcon, MapIcon, XIcon } from "lucide-react";
 import { useOthersMapped } from "@/liveblocks.config";
+import {
+  Drawer,
+  DrawerTrigger,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerClose,
+} from "../ui/drawer";
 
 const MiniMap = () => {
   const [trigger, setTrigger] = useState(false);
   const minimapRef = useRef<HTMLDivElement>(null);
+  const minimapMobileRef = useRef<HTMLDivElement>(null);
   const [lockMinimap, setLockMinimap] = useState(false);
   const { width, height } = useViewportSize();
   const [camera, setCamera] = useAtom(cameraAtom);
@@ -49,76 +60,151 @@ const MiniMap = () => {
   //   };
 
   return (
-    <div
-      className={cn(
-        trigger ? "max-h-[300px] max-w-[300px]" : "max-h-14 max-w-52",
-        "hidden lg:block absolute bottom-6 items-center left-10 z-1 px-4 pb-4 overflow-hidden transition-all duration-1000",
-        "text-black bg-secondary-light  border-2 rounded border-gray-700  gap-4"
-      )}
-      onMouseEnter={() => setTrigger(true)}
-      onMouseLeave={() => {
-        if (!lockMinimap) setTrigger(false);
-      }}
-    >
-      <div className="flex items-center min-w-[100px] justify-between gap-2 my-2">
-        <p>
-          {cursor.x.toFixed(0)}px:{cursor.y.toFixed(0)}px
-        </p>
-        <Button
-          variant={lockMinimap ? "selected" : "outline"}
-          size={"sm"}
-          tooltip="Toggle Minimap"
-          onClick={() => setLockMinimap((prev) => !prev)}
-        >
-          <LockIcon size={12} />
-        </Button>
-      </div>
-
+    <>
+      {/*Desktop*/}
       <div
-        className="border-2 border-red-600 relative flex items-center justify-center"
-        ref={minimapRef}
-        style={{
-          width: CANVAS_SIZE / divider,
-          height: CANVAS_SIZE / divider,
+        className={cn(
+          trigger ? "max-h-[300px] max-w-[300px]" : "max-h-14 max-w-52",
+          "hidden lg:block absolute bottom-6 items-center left-10 z-1 px-4 pb-4 overflow-hidden transition-all duration-1000",
+          "text-black bg-secondary-light  border-2 rounded border-gray-700  gap-4"
+        )}
+        onMouseEnter={() => setTrigger(true)}
+        onMouseLeave={() => {
+          if (!lockMinimap) setTrigger(false);
         }}
       >
-        <motion.div
-          drag
-          dragConstraints={minimapRef}
-          dragMomentum={false}
-          dragElastic={0}
-          className="bg-white border-2 border-gray-700"
+        <div className="flex items-center min-w-[100px] justify-between gap-2 my-2">
+          <p>
+            {cursor.x.toFixed(0)}px:{cursor.y.toFixed(0)}px
+          </p>
+          <Button
+            variant={lockMinimap ? "selected" : "outline"}
+            size={"sm"}
+            tooltip="Toggle Minimap"
+            onClick={() => setLockMinimap((prev) => !prev)}
+          >
+            <LockIcon size={12} />
+          </Button>
+        </div>
+
+        <div
+          className="border-2 border-red-600 relative flex items-center justify-center"
+          ref={minimapRef}
           style={{
-            width: width / divider,
-            height: height / divider,
+            width: CANVAS_SIZE / divider,
+            height: CANVAS_SIZE / divider,
           }}
-          animate={{ x: -camera.x / divider, y: -camera.y / divider }}
-          transition={{ duration: 0 }}
-          //   onDrag={handleDrag}
-        ></motion.div>
-        <MiniCursor
-          color={user.color}
-          cursorPoint={{
-            x: cursor.x / divider,
-            y: cursor.y / divider,
-          }}
-        />
-        {/*Online Minicursors*/}
-        {otherCursors.map(([id, { cursor, color }]) => {
-          if (!cursor) return null;
-          return (
+        >
+          <motion.div
+            drag={false}
+            dragConstraints={minimapRef}
+            dragMomentum={false}
+            dragElastic={0}
+            className="bg-white border-2 border-gray-700"
+            style={{
+              width: width / divider,
+              height: height / divider,
+            }}
+            animate={{ x: -camera.x / divider, y: -camera.y / divider }}
+            transition={{ duration: 0 }}
+            //   onDrag={handleDrag}
+          ></motion.div>
+          <MiniCursor
+            color={user.color}
+            cursorPoint={{
+              x: cursor.x / divider,
+              y: cursor.y / divider,
+            }}
+          />
+          {/*Online Minicursors*/}
+          {otherCursors.map(([id, { cursor, color }]) => {
+            if (!cursor) return null;
+            return (
+              <MiniCursor
+                key={id}
+                color={color}
+                cursorPoint={{
+                  x: cursor.x / divider,
+                  y: cursor.y / divider,
+                }}
+              />
+            );
+          })}
+        </div>
+      </div>
+      {/*Mobile*/}
+      <Drawer>
+        <DrawerTrigger
+          className={cn(
+            "lg:hidden absolute bottom-[4%] left-0 z-1",
+            "text-black bg-secondary-light  border-2 rounded border-gray-700 ",
+            "scale-75 lg:scale-100 2xl:scale-150"
+          )}
+          asChild
+        >
+          <Button variant="ghost">
+            <MapIcon size={16} />
+          </Button>
+        </DrawerTrigger>
+        <DrawerContent className="flex items-center flex-col mb-10">
+          <div className="flex items-center w-full justify-evenly gap-2 my-2">
+            <p>
+              {cursor.x.toFixed(0)}px:{cursor.y.toFixed(0)}px
+            </p>
+            <DrawerClose>
+              <Button size={"sm"} variant={"ghost"}>
+                <XIcon size={16} />
+              </Button>
+            </DrawerClose>
+          </div>
+
+          <div
+            className="border-2 border-red-600 relative flex items-center justify-center"
+            ref={minimapMobileRef}
+            style={{
+              width: CANVAS_SIZE / divider,
+              height: CANVAS_SIZE / divider,
+            }}
+          >
+            <motion.div
+              drag={false}
+              dragConstraints={minimapMobileRef}
+              dragMomentum={false}
+              dragElastic={0}
+              className="bg-white border-2 border-gray-700"
+              style={{
+                width: width / divider,
+                height: height / divider,
+              }}
+              animate={{ x: -camera.x / divider, y: -camera.y / divider }}
+              transition={{ duration: 0 }}
+              //   onDrag={handleDrag}
+            ></motion.div>
             <MiniCursor
-              key={id}
-              color={color}
+              color={user.color}
               cursorPoint={{
                 x: cursor.x / divider,
                 y: cursor.y / divider,
               }}
             />
-          );
-        })}
-      </div>
-    </div>
+            {/*Online Minicursors*/}
+            {otherCursors.map(([id, { cursor, color }]) => {
+              if (!cursor) return null;
+              return (
+                <MiniCursor
+                  key={id}
+                  color={color}
+                  cursorPoint={{
+                    x: cursor.x / divider,
+                    y: cursor.y / divider,
+                  }}
+                />
+              );
+            })}
+          </div>
+        </DrawerContent>
+      </Drawer>
+    </>
   );
 };
 
