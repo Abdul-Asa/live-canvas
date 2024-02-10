@@ -1,9 +1,9 @@
 export interface Editor {
-  camera: Position;
-  cursor: Position;
+  camera: CameraPosition;
+  cursor: CursorPosition;
   canvas: Map<string, CanvasLayer>;
   selectedLayer: string | null;
-  dragMode: boolean;
+  panMode: boolean;
 }
 
 export enum CanvasLayerType {
@@ -13,11 +13,16 @@ export enum CanvasLayerType {
 
 export type CanvasLayer = Sticker | Polaroid;
 
-export interface Position {
+export interface CameraPosition {
   x: number;
   y: number;
   lastX?: number;
   lastY?: number;
+}
+
+export interface CursorPosition {
+  x: number;
+  y: number;
 }
 
 export interface Sticker {

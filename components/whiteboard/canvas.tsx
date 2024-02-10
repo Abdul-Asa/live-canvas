@@ -5,7 +5,7 @@ import {
   cameraAtom,
   canvasRefAtom,
   cursorAtom,
-  dragModeAtom,
+  panModeAtom,
 } from "@/lib/jotai-state";
 import { motion } from "framer-motion";
 import { useAtom, useSetAtom } from "jotai";
@@ -13,7 +13,7 @@ import { useEffect, useRef, useState } from "react";
 
 const Canvas = ({ children }: { children: React.ReactNode }) => {
   const canvasRef = useRef<HTMLDivElement>(null);
-  const [dragMode, setDragMode] = useAtom(dragModeAtom);
+  const [panMode, setpanMode] = useAtom(panModeAtom);
   const [isDragging, setIsDragging] = useState(false);
   const [pos, setPos] = useAtom(cameraAtom);
   const { height, width } = useViewportSize();
@@ -29,6 +29,7 @@ const Canvas = ({ children }: { children: React.ReactNode }) => {
 
   //Scroll Mode
   const handleScroll = (event: React.WheelEvent<HTMLDivElement>) => {
+    console.log("scrolling");
     updateCursorPos(event);
     setPos((prev) => {
       let newX = prev.x - event.deltaX;
@@ -48,7 +49,8 @@ const Canvas = ({ children }: { children: React.ReactNode }) => {
 
   //Drag Mode
   const onPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
-    if (!dragMode) return;
+    console.log("p down");
+    if (!panMode) return;
     setIsDragging(true);
     setPos((prev) => ({
       ...prev,
@@ -58,8 +60,9 @@ const Canvas = ({ children }: { children: React.ReactNode }) => {
   };
 
   const onPointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+    console.log("p move");
     updateCursorPos(event);
-    if (!dragMode) return;
+    if (!panMode) return;
     if (!isDragging) return;
     setPos((prev) => {
       if (!prev.lastX || !prev.lastY) return prev;
@@ -79,12 +82,13 @@ const Canvas = ({ children }: { children: React.ReactNode }) => {
   };
 
   const onPointerUp = () => {
+    console.log("p up");
     setIsDragging(false);
   };
 
   //Mobile touch events
   const handleTouchMove = (event: React.TouchEvent<HTMLDivElement>) => {
-    if (!dragMode) return;
+    if (!panMode) return;
     if (event.touches.length === 1) {
       const touch = event.touches[0];
       setPos((prev) => {
@@ -106,7 +110,8 @@ const Canvas = ({ children }: { children: React.ReactNode }) => {
   };
 
   const handleTouchStart = (event: React.TouchEvent<HTMLDivElement>) => {
-    setDragMode(true);
+    console.log("touch start");
+    setpanMode(true);
     if (event.touches.length === 1) {
       const touch = event.touches[0];
       setPos((prev) => ({
@@ -118,7 +123,7 @@ const Canvas = ({ children }: { children: React.ReactNode }) => {
   };
 
   const handleTouchEnd = () => {
-    setDragMode(false);
+    setpanMode(false);
   };
 
   useEffect(() => {
@@ -135,8 +140,9 @@ const Canvas = ({ children }: { children: React.ReactNode }) => {
         translateX: pos.x,
         translateY: pos.y,
         backgroundImage:
-          "linear-gradient(to right, grey 1px, transparent 1px), linear-gradient(to bottom, grey 1px, transparent 1px)",
-        backgroundSize: "100px 100px",
+          "linear-gradient(to right, black 2px, transparent 1px), linear-gradient(to bottom, black 2px, transparent 1px)",
+        backgroundSize: "50px 50px",
+        backgroundColor: "#dadad2",
       }}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}

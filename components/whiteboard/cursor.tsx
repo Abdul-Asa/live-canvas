@@ -3,18 +3,26 @@ import { motion } from "framer-motion";
 import { useAtom } from "jotai";
 
 const Cursor = () => {
-  const [cursorPos, setCursorPos] = useAtom(cursorAtom);
+  const [{ x, y }, setCursorPos] = useAtom(cursorAtom);
 
   return (
     <motion.span
-      className="absolute border p-1"
+      className="absolute border-2 p-1 border-white bg-red-500 text-white pointer-events-none"
       style={{
-        translateX: cursorPos.x,
-        translateY: cursorPos.y,
-        pointerEvents: "none", // Prevent span from interfering with mouse events
+        position: "absolute",
+        top: "0",
+        left: "0",
+      }}
+      initial={{ x, y }}
+      animate={{ x, y }}
+      transition={{
+        type: "spring",
+        damping: 30,
+        mass: 0.8,
+        stiffness: 350,
       }}
     >
-      {`${cursorPos.x.toFixed(0)}px, ${cursorPos.y.toFixed(0)}px`}
+      <p className="w-40 truncate">Anonymous Anonymous</p>
     </motion.span>
   );
 };

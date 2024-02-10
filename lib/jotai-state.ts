@@ -1,32 +1,32 @@
 import { atom } from "jotai";
-import { CanvasLayer, Editor, Position } from "./type";
+import { CanvasLayer, Editor, CameraPosition, CursorPosition } from "./type";
 import { RefObject } from "react";
 
 const canvasRefAtom = atom<RefObject<HTMLDivElement> | null>(null);
 
-const cameraAtom = atom<Position>({ x: 0, y: 0 });
+const cameraAtom = atom<CameraPosition>({ x: 0, y: 0, lastX: 0, lastY: 0 });
 
-const cursorAtom = atom<Position>({ x: 0, y: 0 });
+const cursorAtom = atom<CursorPosition>({ x: 0, y: 0 });
 
 const canvasAtom = atom<Map<string, CanvasLayer>>(new Map());
 
 const selectedLayerAtom = atom<string | null>(null);
 
-const dragModeAtom = atom<boolean>(false);
+const panModeAtom = atom<boolean>(false);
 
 const editorAtom = atom<Editor>((get) => {
   const camera = get(cameraAtom);
   const cursor = get(cursorAtom);
   const canvas = get(canvasAtom);
   const selectedLayer = get(selectedLayerAtom);
-  const dragMode = get(dragModeAtom);
+  const panMode = get(panModeAtom);
 
   return {
     camera,
     cursor,
     canvas,
     selectedLayer,
-    dragMode,
+    panMode,
   };
 });
 
@@ -36,6 +36,6 @@ export {
   canvasAtom,
   selectedLayerAtom,
   editorAtom,
-  dragModeAtom,
+  panModeAtom,
   canvasRefAtom,
 };

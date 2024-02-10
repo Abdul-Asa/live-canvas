@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Chivo_Mono } from "next/font/google";
 import "./globals.css";
 import { Provider } from "@/components/providers/jotai-provider";
+import { cn } from "@/lib/utils";
 
-const inter = Inter({ subsets: ["latin"] });
+const chivo = Chivo_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -17,7 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={cn(chivo.className, "text-black")}>
         <Provider>{children}</Provider>
       </body>
     </html>
