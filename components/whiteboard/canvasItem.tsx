@@ -7,6 +7,7 @@ import {
 } from "@/lib/jotai-state";
 import { CanvasLayer, CanvasLayerType, Polaroid, Sticker } from "@/lib/type";
 import { cn } from "@/lib/utils";
+import { useMutation, useMyPresence } from "@/liveblocks.config";
 import { PanInfo, motion } from "framer-motion";
 import { useAtom, useAtomValue } from "jotai";
 import Image from "next/image";
@@ -31,10 +32,28 @@ const StickerComponent: React.FC<{ sticker: Sticker }> = ({ sticker }) => {
   const canvasRef = useAtomValue(canvasRefAtom);
   const [selected, setSelected] = useAtom(selectedLayerAtom);
   const stickerRef = useRef<HTMLDivElement>(null);
+  const [{ selectedLayer }, updateMyPresence] = useMyPresence();
+
+  const updateLayers1 = useMutation(
+    ({ storage }, { id, newHeight, newWidth }) => {
+      storage.get("canvas").get(id)?.update({
+        width: newWidth,
+        height: newHeight,
+      });
+    },
+    []
+  );
+  const updateLayers2 = useMutation(({ storage }, { id, newX, newY }) => {
+    storage.get("canvas").get(id)?.update({
+      x: newX,
+      y: newY,
+    });
+  }, []);
 
   const handleDoubleClick = () => {
     if (!canvasList.get(id)) return;
     updateCanvasList((prev) => {
+      updateLayers1({ id, newHeight: height + 50, newWidth: width + 50 });
       prev.set(id, { ...sticker, width: width + 50, height: height + 50 });
       return new Map(prev);
     });
@@ -47,6 +66,7 @@ const StickerComponent: React.FC<{ sticker: Sticker }> = ({ sticker }) => {
       if (width <= 50 || height <= 50) {
         return prev;
       }
+      updateLayers1({ id, newHeight: height - 50, newWidth: width - 50 });
       prev.set(id, { ...sticker, width: width - 50, height: height - 50 });
       return new Map(prev);
     });
@@ -56,6 +76,7 @@ const StickerComponent: React.FC<{ sticker: Sticker }> = ({ sticker }) => {
     event: MouseEvent | TouchEvent | PointerEvent,
     info: PanInfo
   ) => {
+    event.stopPropagation();
     if (!canvasList.get(id)) return;
     const stickerRect = stickerRef.current?.getBoundingClientRect();
     if (!stickerRect) return;
@@ -65,6 +86,11 @@ const StickerComponent: React.FC<{ sticker: Sticker }> = ({ sticker }) => {
       const offsetY = event.clientY - stickerRect.top;
 
       updateCanvasList((prev) => {
+        updateLayers2({
+          id,
+          newX: cursor.x - offsetX,
+          newY: cursor.y - offsetY,
+        });
         prev.set(id, {
           ...sticker,
           x: cursor.x - offsetX,
@@ -78,10 +104,7 @@ const StickerComponent: React.FC<{ sticker: Sticker }> = ({ sticker }) => {
   return (
     <motion.div
       ref={stickerRef}
-      className={cn(
-        " mix-blend-multiply filter",
-        selected === id && "border border-blue-500"
-      )}
+      className={cn(selected === id && "border border-blue-500")}
       drag
       dragConstraints={canvasRef !== null ? canvasRef : false}
       dragMomentum={false}
@@ -91,12 +114,14 @@ const StickerComponent: React.FC<{ sticker: Sticker }> = ({ sticker }) => {
         y,
         position: "absolute",
         cursor: "grab",
-        zIndex: 10,
+        zIndex: selected === id ? 5 : 4,
       }}
       onDoubleClick={handleDoubleClick}
       onContextMenu={handleRightClick}
-      onPointerDown={() => {
+      onPointerDown={(e) => {
+        e.stopPropagation();
         setSelected(id);
+        updateMyPresence({ selectedLayer: id });
       }}
     >
       {src.endsWith(".json") ? (
@@ -127,18 +152,12 @@ const PolaroidComponent: React.FC<{ polaroid: Polaroid }> = ({ polaroid }) => {
   const cursor = useAtomValue(cursorAtom);
   const [selected, setSelected] = useAtom(selectedLayerAtom);
   const polRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    console.log("CanvasItem mounted");
-    return () => {
-      console.log("CanvasItem unmounted");
-    };
-  }, []);
-
+  const [{ selectedLayer }, updateMyPresence] = useMyPresence();
   const handleDrag = (
     event: MouseEvent | TouchEvent | PointerEvent,
     info: PanInfo
   ) => {
+    event.stopPropagation();
     if (!canvasList.get(id)) return;
     const polaroidRef = polRef.current?.getBoundingClientRect();
     if (!polaroidRef) return;
@@ -164,8 +183,10 @@ const PolaroidComponent: React.FC<{ polaroid: Polaroid }> = ({ polaroid }) => {
       dragConstraints={canvasRef !== null ? canvasRef : false}
       dragMomentum={false}
       onDrag={handleDrag}
-      onPointerDown={() => {
+      onPointerDown={(e) => {
+        e.stopPropagation();
         setSelected(id);
+        updateMyPresence({ selectedLayer: id });
       }}
       style={{
         x,
@@ -175,7 +196,7 @@ const PolaroidComponent: React.FC<{ polaroid: Polaroid }> = ({ polaroid }) => {
         height: "250px",
         backgroundColor: "white",
         boxShadow: "-0.6rem 0.6rem 0 rgba(29, 30, 28, 0.26)",
-        zIndex: 5,
+        zIndex: selected === id ? 5 : 4,
       }}
     >
       {x.toFixed(0)}: {y.toFixed(0)}

@@ -1,4 +1,4 @@
-import { createClient } from "@liveblocks/client";
+import { LiveMap, LiveObject, createClient } from "@liveblocks/client";
 import { createRoomContext } from "@liveblocks/react";
 
 const client = createClient({
@@ -14,6 +14,7 @@ type Presence = {
   cursor: { x: number; y: number } | null;
   color: string;
   nickName: string;
+  selectedLayer: string | null;
 };
 
 // Optionally, Storage represents the shared document that persists in the
@@ -21,6 +22,19 @@ type Presence = {
 // LiveList, LiveMap, LiveObject instances, for which updates are
 // automatically persisted and synced to all connected clients.
 type Storage = {
+  canvas: LiveMap<
+    string,
+    LiveObject<{
+      x: number;
+      y: number;
+      width?: number;
+      height?: number;
+      id: string;
+      src?: string;
+      type: "sticker" | "polaroid";
+      color?: string;
+    }>
+  >;
   // author: LiveObject<{ firstName: string, lastName: string }>,
   // ...
 };

@@ -42,7 +42,6 @@ const Canvas = ({ children }: { children: React.ReactNode }) => {
 
   //Scroll Mode
   const handleScroll = (event: React.WheelEvent<HTMLDivElement>) => {
-    console.log("scrolling");
     updateCursorPos(event);
     setPos((prev) => {
       let newX = prev.x - event.deltaX;
@@ -162,6 +161,7 @@ const Canvas = ({ children }: { children: React.ReactNode }) => {
       onPointerDown={onPointerDown}
       onPointerUp={onPointerUp}
       onPointerMove={onPointerMove}
+      onPointerLeave={() => updateMyPresence({ cursor: null })}
     >
       {children}
     </motion.div>

@@ -1,6 +1,6 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { Minimize2, SeparatorVertical } from "lucide-react";
 import { TwitterPicker } from "react-color";
 import {
@@ -93,10 +93,9 @@ const UserList = () => {
 
       <div className="flex w-full flex-col justify-between gap-2 mt-4">
         {otherUsers.map(([id, user]) => (
-          <>
+          <React.Fragment key={id}>
             <Separator className="bg-primary-dark" />
             <div
-              key={id}
               className="flex items-center justify-between w-full"
               style={{ color: user.color }}
             >
@@ -106,7 +105,7 @@ const UserList = () => {
                 style={{ backgroundColor: user.color }}
               />
             </div>
-          </>
+          </React.Fragment>
         ))}
 
         {!otherUsers.length && (
