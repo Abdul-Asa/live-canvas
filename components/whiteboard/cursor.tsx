@@ -25,14 +25,8 @@ const Cursor = ({
           top: "0",
           left: "0",
           backgroundColor: user.color,
-        }}
-        initial={{ x, y }}
-        animate={{ x, y }}
-        transition={{
-          type: "spring",
-          damping: 30,
-          mass: 0.8,
-          stiffness: 350,
+          translateX: x,
+          translateY: y,
         }}
       >
         <p className="max-w-40 truncate p-1">
