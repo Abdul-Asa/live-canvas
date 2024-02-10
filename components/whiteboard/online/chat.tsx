@@ -10,9 +10,9 @@ const OnlineChat = () => {
     <div
       className={cn(
         trigger ? "max-h-[300px] max-w-[300px]" : "max-h-[74px]",
-        "hidden md:block absolute top-[4%] items-center left-10 z-1 p-4 overflow-hidden transition-all duration-1000",
+        "hidden lg:block absolute top-[4%] items-center left-10 z-1 p-4 overflow-hidden transition-all duration-1000",
         "text-black bg-secondary-light  border-2 rounded border-gray-700  gap-4",
-        "scale-75 md:scale-100 2xl:scale-150"
+        "scale-75 lg:scale-100 2xl:scale-150"
       )}
     >
       Chat

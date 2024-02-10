@@ -21,7 +21,7 @@ export default function Home() {
 
   return (
     <main className="flex flex-col h-screen justify-center items-center py-24">
-      <h1 className="md:text-5xl font-extrabold leading-tight text-3xl">
+      <h1 className="lg:text-5xl font-extrabold leading-tight text-3xl">
         Live Whiteboard
       </h1>
       <div className="mt-6 flex flex-col text-left  gap-6">

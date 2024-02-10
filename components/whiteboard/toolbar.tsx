@@ -17,9 +17,9 @@ const Toolbar = () => {
   return (
     <div
       className={cn(
-        "absolute top-[4%] items-center -translate-x-1/2 flex left-1/2 z-1 p-4",
+        "absolute top-4 lg:top-[4%] items-center -translate-x-1/2 flex left-1/2 z-1 p-4",
         "text-black bg-secondary-light  border-2 rounded border-gray-700  gap-4",
-        "scale-75 md:scale-100 2xl:scale-150"
+        "scale-50 lg:scale-100 2xl:scale-150"
       )}
     >
       <Button
