@@ -5,6 +5,7 @@ import { RefObject } from "react";
 const userAtom = atom({
   color: "#000000",
   nickName: "Anonymous",
+  isMobile: false,
 });
 
 const canvasRefAtom = atom<RefObject<HTMLDivElement> | null>(null);

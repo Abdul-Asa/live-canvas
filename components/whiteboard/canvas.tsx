@@ -7,6 +7,7 @@ import {
   cursorAtom,
   panModeAtom,
   selectedLayerAtom,
+  userAtom,
 } from "@/lib/jotai-state";
 import { useMyPresence } from "@/liveblocks.config";
 import { motion } from "framer-motion";
@@ -23,6 +24,7 @@ const Canvas = ({ children }: { children: React.ReactNode }) => {
   const setRef = useSetAtom(canvasRefAtom);
   const setSelectedLayer = useSetAtom(selectedLayerAtom);
   const [, updateMyPresence] = useMyPresence();
+  const [isMobile, setIsMobile] = useAtom(userAtom);
 
   const updateCursorPos = (event: React.MouseEvent<HTMLDivElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
@@ -139,9 +141,27 @@ const Canvas = ({ children }: { children: React.ReactNode }) => {
     setpanMode(false);
   };
 
-  useEffect(() => {
-    if (canvasRef.current) setRef(canvasRef);
-  }, [canvasRef, setRef]);
+  useEffect(
+    function setCanvasRef() {
+      if (canvasRef.current) setRef(canvasRef);
+    },
+    [canvasRef, setRef]
+  );
+
+  useEffect(
+    function checkIfMobile() {
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      if (isMobile) {
+        console.log("You are using a mobile device");
+        setIsMobile((prev) => ({ ...prev, isMobile: true }));
+        //online feature
+        updateMyPresence({ isMobile: true });
+      } else {
+        console.log("You are not using a mobile device");
+      }
+    },
+    [updateMyPresence]
+  );
 
   return (
     <motion.div

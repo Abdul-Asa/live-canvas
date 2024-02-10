@@ -14,6 +14,7 @@ type Presence = {
   cursor: { x: number; y: number } | null;
   color: string;
   nickName: string;
+  isMobile: boolean;
 };
 
 // Optionally, Storage represents the shared document that persists in the
