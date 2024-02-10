@@ -2,7 +2,7 @@ import { cursorAtom } from "@/lib/jotai-state";
 import { motion } from "framer-motion";
 import { useAtom } from "jotai";
 
-const Cursor = () => {
+const Cursor = ({ userName, color }: { userName?: string; color?: string }) => {
   const [{ x, y }, setCursorPos] = useAtom(cursorAtom);
 
   return (
@@ -22,7 +22,7 @@ const Cursor = () => {
         stiffness: 350,
       }}
     >
-      <p className="w-40 truncate">Anonymous Anonymous</p>
+      <p className="max-w-40 truncate p-1">{userName ? userName : "Guest"}</p>
     </motion.span>
   );
 };

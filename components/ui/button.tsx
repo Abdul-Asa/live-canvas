@@ -63,7 +63,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <TooltipProvider>
         <Tooltip>
-          <TooltipTrigger>
+          <TooltipTrigger asChild>
             <Comp
               className={cn(buttonVariants({ variant, size, className }))}
               ref={ref}
@@ -71,7 +71,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             />
           </TooltipTrigger>
           <TooltipContent>
-            <p>{tooltip}</p>
+            <p className="text-[10px]">{tooltip}</p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>

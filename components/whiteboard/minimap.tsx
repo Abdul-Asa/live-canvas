@@ -63,6 +63,7 @@ const MiniMap = () => {
         <Button
           variant={lockMinimap ? "selected" : "outline"}
           size={"sm"}
+          tooltip="Toggle Minimap"
           onClick={() => setLockMinimap((prev) => !prev)}
         >
           <LockIcon size={12} />

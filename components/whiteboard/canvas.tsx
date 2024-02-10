@@ -6,6 +6,7 @@ import {
   canvasRefAtom,
   cursorAtom,
   panModeAtom,
+  selectedLayerAtom,
 } from "@/lib/jotai-state";
 import { motion } from "framer-motion";
 import { useAtom, useSetAtom } from "jotai";
@@ -19,11 +20,19 @@ const Canvas = ({ children }: { children: React.ReactNode }) => {
   const { height, width } = useViewportSize();
   const setCursorPos = useSetAtom(cursorAtom);
   const setRef = useSetAtom(canvasRefAtom);
+  const setSelectedLayer = useSetAtom(selectedLayerAtom);
 
   const updateCursorPos = (event: React.MouseEvent<HTMLDivElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
+    setCursorPos({ x, y });
+  };
+
+  const updateMobileCursorPos = (event: React.TouchEvent<HTMLDivElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const x = event.touches[0].clientX - rect.left;
+    const y = event.touches[0].clientY - rect.top;
     setCursorPos({ x, y });
   };
 
@@ -49,7 +58,7 @@ const Canvas = ({ children }: { children: React.ReactNode }) => {
 
   //Drag Mode
   const onPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
-    console.log("p down");
+    setSelectedLayer(null);
     if (!panMode) return;
     setIsDragging(true);
     setPos((prev) => ({
@@ -60,7 +69,6 @@ const Canvas = ({ children }: { children: React.ReactNode }) => {
   };
 
   const onPointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
-    console.log("p move");
     updateCursorPos(event);
     if (!panMode) return;
     if (!isDragging) return;
@@ -82,7 +90,6 @@ const Canvas = ({ children }: { children: React.ReactNode }) => {
   };
 
   const onPointerUp = () => {
-    console.log("p up");
     setIsDragging(false);
   };
 
@@ -110,7 +117,7 @@ const Canvas = ({ children }: { children: React.ReactNode }) => {
   };
 
   const handleTouchStart = (event: React.TouchEvent<HTMLDivElement>) => {
-    console.log("touch start");
+    updateMobileCursorPos(event);
     setpanMode(true);
     if (event.touches.length === 1) {
       const touch = event.touches[0];

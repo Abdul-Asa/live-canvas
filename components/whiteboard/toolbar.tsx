@@ -19,7 +19,6 @@ import { cn } from "@/lib/utils";
 const Toolbar = () => {
   const [panMode, setpanMode] = useAtom(panModeAtom);
   const editor = useAtomValue(editorAtom);
-  const { width, height } = useViewportSize();
 
   const togglePanMode = () => {
     setpanMode((prev) => !prev);
@@ -28,28 +27,33 @@ const Toolbar = () => {
   return (
     <div
       className={cn(
-        "absolute top-6 items-center -translate-x-1/2 flex left-1/2 z-1 p-4",
+        "absolute top-[4%] items-center -translate-x-1/2 flex left-1/2 z-1 p-4",
         "text-black bg-secondary-light  border-2 rounded border-gray-700  gap-4",
-        "scale-75 md:scale-100"
+        "scale-75 md:scale-100 2xl:scale-150"
       )}
     >
       <Button
         variant={!panMode ? "selected" : "icon"}
         onClick={() => setpanMode(false)}
+        tooltip="Cursor"
       >
         <MousePointer2 size={20} />
       </Button>
-      <Button variant={panMode ? "selected" : "icon"} onClick={togglePanMode}>
+      <Button
+        variant={panMode ? "selected" : "icon"}
+        tooltip={"Pan Mode"}
+        onClick={togglePanMode}
+      >
         <Hand size={20} />
       </Button>
-      <Button variant={"icon"}>
+      <Button variant={"icon"} tooltip={"Stickers"}>
         <Sticker size={20} />
       </Button>
-      <Separator orientation="vertical" />
-      <Button variant={"icon"}>
+      <div className="bg-black h-10 w-[1px] rounded-2xl " />
+      <Button variant={"icon"} tooltip="Toggle Video">
         <VideoIcon size={20} />
       </Button>
-      <Button variant={"icon"}>
+      <Button variant={"icon"} tooltip="Toggle Audio">
         <Mic size={20} />
       </Button>
     </div>
