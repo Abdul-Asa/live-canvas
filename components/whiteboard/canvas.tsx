@@ -8,6 +8,7 @@ import {
   panModeAtom,
   selectedLayerAtom,
 } from "@/lib/jotai-state";
+import { useMyPresence } from "@/liveblocks.config";
 import { motion } from "framer-motion";
 import { useAtom, useSetAtom } from "jotai";
 import { useEffect, useRef, useState } from "react";
@@ -21,12 +22,14 @@ const Canvas = ({ children }: { children: React.ReactNode }) => {
   const setCursorPos = useSetAtom(cursorAtom);
   const setRef = useSetAtom(canvasRefAtom);
   const setSelectedLayer = useSetAtom(selectedLayerAtom);
+  const [, updateMyPresence] = useMyPresence();
 
   const updateCursorPos = (event: React.MouseEvent<HTMLDivElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
     setCursorPos({ x, y });
+    updateMyPresence({ cursor: { x, y } });
   };
 
   const updateMobileCursorPos = (event: React.TouchEvent<HTMLDivElement>) => {
@@ -34,6 +37,7 @@ const Canvas = ({ children }: { children: React.ReactNode }) => {
     const x = event.touches[0].clientX - rect.left;
     const y = event.touches[0].clientY - rect.top;
     setCursorPos({ x, y });
+    updateMyPresence({ cursor: { x, y } });
   };
 
   //Scroll Mode

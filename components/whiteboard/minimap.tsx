@@ -1,21 +1,24 @@
 "use client";
 import { useViewportSize } from "@/hooks/use-viewport-size";
 import { CANVAS_SIZE } from "@/lib/constants";
-import { cameraAtom, cursorAtom } from "@/lib/jotai-state";
+import { cameraAtom, cursorAtom, userAtom } from "@/lib/jotai-state";
 import { cn } from "@/lib/utils";
 import { PanInfo, motion } from "framer-motion";
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import { useMemo, useRef, useState } from "react";
 import { Button } from "../ui/button";
 import { LockIcon } from "lucide-react";
+import { useOthersMapped } from "@/liveblocks.config";
 
 const MiniMap = () => {
-  const [trigger, setTrigger] = useState(true);
+  const [trigger, setTrigger] = useState(false);
   const minimapRef = useRef<HTMLDivElement>(null);
   const [lockMinimap, setLockMinimap] = useState(false);
   const { width, height } = useViewportSize();
   const [camera, setCamera] = useAtom(cameraAtom);
   const [cursor, setCursor] = useAtom(cursorAtom);
+  const user = useAtomValue(userAtom);
+  const otherCursors = useOthersMapped((other) => other.presence);
 
   const divider = useMemo(() => {
     if (width > 1600) return 15;
@@ -92,8 +95,57 @@ const MiniMap = () => {
           transition={{ duration: 0 }}
           //   onDrag={handleDrag}
         ></motion.div>
+        <MiniCursor
+          color={user.color}
+          cursorPoint={{
+            x: cursor.x / divider,
+            y: cursor.y / divider,
+          }}
+        />
+        {otherCursors.map(([id, { cursor, color }]) => {
+          if (!cursor) return null;
+          return (
+            <MiniCursor
+              key={id}
+              color={color}
+              cursorPoint={{
+                x: cursor.x / divider,
+                y: cursor.y / divider,
+              }}
+            />
+          );
+        })}
       </div>
     </div>
+  );
+};
+
+const MiniCursor = ({
+  color,
+  cursorPoint,
+}: {
+  color: string;
+  cursorPoint: { x: number; y: number };
+}) => {
+  return (
+    <motion.div
+      className=" w-2 h-2 rounded-full border-2 border-white pointer-events-none"
+      style={{
+        position: "absolute",
+        top: "0",
+        left: "0",
+        backgroundColor: color,
+        zIndex: 2,
+      }}
+      initial={{ x: cursorPoint.x, y: cursorPoint.y }}
+      animate={{ x: cursorPoint.x, y: cursorPoint.y }}
+      transition={{
+        type: "spring",
+        damping: 30,
+        mass: 0.8,
+        stiffness: 350,
+      }}
+    />
   );
 };
 
