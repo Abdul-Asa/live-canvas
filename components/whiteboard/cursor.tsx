@@ -2,6 +2,7 @@ import { cursorAtom, userAtom } from "@/lib/jotai-state";
 import { motion } from "framer-motion";
 import { useAtom, useAtomValue } from "jotai";
 
+//refactor redundant props
 const Cursor = ({
   nickName,
   color,

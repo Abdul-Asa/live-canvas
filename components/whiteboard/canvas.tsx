@@ -29,6 +29,7 @@ const Canvas = ({ children }: { children: React.ReactNode }) => {
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
     setCursorPos({ x, y });
+    //online
     updateMyPresence({ cursor: { x, y } });
   };
 
@@ -37,6 +38,7 @@ const Canvas = ({ children }: { children: React.ReactNode }) => {
     const x = event.touches[0].clientX - rect.left;
     const y = event.touches[0].clientY - rect.top;
     setCursorPos({ x, y });
+    //online
     updateMyPresence({ cursor: { x, y } });
   };
 

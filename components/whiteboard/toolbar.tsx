@@ -1,19 +1,9 @@
 "use client";
 import { useAtom, useAtomValue } from "jotai";
 import { editorAtom, panModeAtom } from "@/lib/jotai-state";
-import { useViewportSize } from "@/hooks/use-viewport-size";
-import {
-  GrabIcon,
-  Hand,
-  Mic,
-  Mic2,
-  MousePointer2,
-  Sticker,
-  VideoIcon,
-} from "lucide-react";
+import { Hand, Mic, MousePointer2, Sticker, VideoIcon } from "lucide-react";
 import { Button } from "../ui/button";
 
-import { Separator } from "../ui/separator";
 import { cn } from "@/lib/utils";
 
 const Toolbar = () => {

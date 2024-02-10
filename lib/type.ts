@@ -13,18 +13,6 @@ export enum CanvasLayerType {
 
 export type CanvasLayer = Sticker | Polaroid;
 
-export interface CameraPosition {
-  x: number;
-  y: number;
-  lastX?: number;
-  lastY?: number;
-}
-
-export interface CursorPosition {
-  x: number;
-  y: number;
-}
-
 export interface Sticker {
   type: CanvasLayerType.STICKER;
   id: string;
@@ -41,4 +29,16 @@ export interface Polaroid {
   x: number;
   y: number;
   color: string;
+}
+
+export interface CameraPosition {
+  x: number;
+  y: number;
+  lastX?: number;
+  lastY?: number;
+}
+
+export interface CursorPosition {
+  x: number;
+  y: number;
 }

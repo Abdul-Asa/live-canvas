@@ -2,13 +2,12 @@ import { atom } from "jotai";
 import { CanvasLayer, Editor, CameraPosition, CursorPosition } from "./type";
 import { RefObject } from "react";
 
-const canvasRefAtom = atom<RefObject<HTMLDivElement> | null>(null);
-
 const userAtom = atom({
-  cursor: null,
   color: "#000000",
   nickName: "Anonymous",
 });
+
+const canvasRefAtom = atom<RefObject<HTMLDivElement> | null>(null);
 
 const cameraAtom = atom<CameraPosition>({ x: 0, y: 0, lastX: 0, lastY: 0 });
 

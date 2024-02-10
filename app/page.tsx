@@ -10,9 +10,18 @@ import { TwitterPicker } from "react-color";
 export default function Home() {
   const [user, setUser] = useAtom(userAtom);
   const route = useRouter();
+
+  //Draggable Mini map
+  //Fix Mobile out of bounds scrolling
+  //Detect Mobile cursor
+  //Add drawer for mobile minimap
+  //Seperate online features
+  //Add chat
+  //Make my own color picker component
+
   return (
     <main className="flex flex-col h-screen justify-center items-center py-24">
-      <h1 className="text-5xl font-extrabold leading-tight sm:text-extra">
+      <h1 className="md:text-5xl font-extrabold leading-tight text-3xl">
         Live Whiteboard
       </h1>
       <div className="mt-6 flex flex-col text-left  gap-6">

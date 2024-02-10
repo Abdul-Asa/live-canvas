@@ -18,6 +18,7 @@ const MiniMap = () => {
   const [camera, setCamera] = useAtom(cameraAtom);
   const [cursor, setCursor] = useAtom(cursorAtom);
   const user = useAtomValue(userAtom);
+  //online
   const otherCursors = useOthersMapped((other) => other.presence);
 
   const divider = useMemo(() => {
@@ -102,6 +103,7 @@ const MiniMap = () => {
             y: cursor.y / divider,
           }}
         />
+        {/*Online Minicursors*/}
         {otherCursors.map(([id, { cursor, color }]) => {
           if (!cursor) return null;
           return (
