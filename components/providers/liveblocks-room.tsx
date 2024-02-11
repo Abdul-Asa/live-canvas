@@ -15,6 +15,7 @@ export function Room({ children }: { children: ReactNode }) {
         nickName: userState.nickName,
         color: userState.color,
         isMobile: false,
+        selectedLayer: null,
       }}
     >
       <ClientSideSuspense

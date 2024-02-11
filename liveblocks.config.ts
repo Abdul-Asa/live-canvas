@@ -15,6 +15,7 @@ type Presence = {
   color: string;
   nickName: string;
   isMobile: boolean;
+  selectedLayer: string | null;
 };
 
 // Optionally, Storage represents the shared document that persists in the
