@@ -35,9 +35,14 @@ import { Input } from "@/components/ui/input";
 import { CanvasLayerType } from "@/lib/type";
 import { STICKER_LINKS, LOTTIE_LINKS } from "@/lib/constants";
 import { Separator } from "../ui/separator";
-import { useMyPresence, useOthersMapped } from "@/liveblocks.config";
+import {
+  useMutation,
+  useMyPresence,
+  useOthersMapped,
+} from "@/liveblocks.config";
 import { useState, useRef } from "react";
 import { TwitterPicker } from "react-color";
+import { LiveObject } from "@liveblocks/client";
 
 const Toolbar = () => {
   const [panMode, setpanMode] = useAtom(panModeAtom);
@@ -50,10 +55,41 @@ const Toolbar = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const otherUsers = useOthersMapped((other) => other.presence);
   const [user, setUser] = useAtom(userAtom);
+  const addLayerOnline = useMutation(
+    ({ storage }, id: string, x: number, y: number, src?: string) => {
+      if (src) {
+        storage.get("canvas").set(
+          id,
+          new LiveObject({
+            id,
+            type: "sticker",
+            x,
+            y,
+            src,
+            height: 200,
+            width: 200,
+          })
+        );
+      } else {
+        storage.get("canvas").set(
+          id,
+          new LiveObject({
+            id,
+            type: "polaroid",
+            x,
+            y,
+            color: user.color,
+          })
+        );
+      }
+    },
+    []
+  );
 
   const togglePanMode = () => {
     setpanMode((prev) => !prev);
   };
+
   const addSticker = (link: string) => {
     setCanvas((prev) => {
       const id = crypto.randomUUID();
@@ -66,10 +102,9 @@ const Toolbar = () => {
         height: 200,
         id,
       });
-
+      // addLayerOnline(id, cursor.x, cursor.y, link);
       return new Map(prev);
     });
-    console.log([...editor.canvas.values()]);
   };
 
   const addNote = () => {
@@ -82,11 +117,9 @@ const Toolbar = () => {
         color: user.color,
         id,
       });
-
+      // addLayerOnline(id, cursor.x, cursor.y);
       return new Map(prev);
     });
-
-    console.log([...editor.canvas.values()]);
   };
 
   return (

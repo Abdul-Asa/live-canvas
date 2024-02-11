@@ -4,9 +4,11 @@ import { ClientSideSuspense } from "@liveblocks/react";
 import { RoomProvider } from "@/liveblocks.config";
 import { useAtomValue } from "jotai";
 import { userAtom } from "@/lib/jotai-state";
+import { LiveMap, LiveObject } from "@liveblocks/client";
 
 export function Room({ children }: { children: ReactNode }) {
   const userState = useAtomValue(userAtom);
+
   return (
     <RoomProvider
       id="my-room"
@@ -16,6 +18,9 @@ export function Room({ children }: { children: ReactNode }) {
         color: userState.color,
         isMobile: false,
         selectedLayer: null,
+      }}
+      initialStorage={{
+        canvas: new LiveMap(),
       }}
     >
       <ClientSideSuspense

@@ -1,4 +1,4 @@
-import { createClient } from "@liveblocks/client";
+import { LiveMap, LiveObject, createClient } from "@liveblocks/client";
 import { createRoomContext } from "@liveblocks/react";
 
 const client = createClient({
@@ -24,6 +24,27 @@ type Presence = {
 // automatically persisted and synced to all connected clients.
 type Storage = {
   // author: LiveObject<{ firstName: string, lastName: string }>,
+  canvas: LiveMap<
+    string,
+    LiveObject<
+      | {
+          type: string;
+          src: string;
+          x: number;
+          y: number;
+          width: number;
+          height: number;
+          id: string;
+        }
+      | {
+          type: string;
+          x: number;
+          y: number;
+          color: string;
+          id: string;
+        }
+    >
+  >;
   // ...
 };
 

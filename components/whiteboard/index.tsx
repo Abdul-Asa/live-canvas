@@ -11,10 +11,55 @@ import OtherCursors from "./online/other-cursors";
 import { canvasAtom } from "@/lib/jotai-state";
 import { useAtom } from "jotai";
 import CanvasItem from "./canvasItem";
+import { useMutation, useStorage } from "@/liveblocks.config";
+import { CanvasLayer } from "@/lib/type";
+import { LiveMap, LiveObject } from "@liveblocks/client";
+import { useEffect } from "react";
 
 const Whiteboard = () => {
   useDisableScrollBounce();
   const [canvas, setCanvas] = useAtom(canvasAtom);
+  const onlineCanvas = useStorage((room) => room.canvas);
+
+  const updateOnlineCanvas = useMutation(
+    ({ storage }, canvas: Map<string, CanvasLayer>) => {
+      const newCanvas: any = new LiveMap();
+      canvas.forEach((value, key) => {
+        if (value.type === "sticker") {
+          newCanvas.set(
+            key,
+            new LiveObject({
+              id: key,
+              type: "sticker",
+              src: value.src,
+              x: value.x,
+              y: value.y,
+              width: value.width,
+              height: value.height,
+            })
+          );
+        } else if (value.type === "polaroid") {
+          newCanvas.set(
+            key,
+            new LiveObject({
+              id: key,
+              type: "polaroid",
+              x: value.x,
+              y: value.y,
+              color: value.color,
+            })
+          );
+        }
+      });
+      storage.set("canvas", newCanvas);
+    },
+    []
+  );
+
+  useEffect(() => {
+    updateOnlineCanvas(canvas);
+  }, [canvas]);
+
   //make it offline first in the future
 
   return (
@@ -22,8 +67,8 @@ const Whiteboard = () => {
       <Script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js" />
       <Canvas>
         <Cursor isClient />
-        {[...canvas.values()].map((item) => {
-          return <CanvasItem key={item.id} canvasLayer={item} />;
+        {[...onlineCanvas.values()].map((item) => {
+          return <CanvasItem key={item.id} canvasLayer={item as CanvasLayer} />;
         })}
         {/* Online cursors */}
         <OtherCursors />
