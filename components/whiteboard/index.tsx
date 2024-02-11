@@ -22,9 +22,9 @@ const Whiteboard = () => {
       <Script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js" />
       <Canvas>
         <Cursor isClient />
-        {/* {[...canvas.values()].map((item) => {
+        {[...canvas.values()].map((item) => {
           return <CanvasItem key={item.id} canvasLayer={item} />;
-        })} */}
+        })}
         {/* Online cursors */}
         <OtherCursors />
       </Canvas>

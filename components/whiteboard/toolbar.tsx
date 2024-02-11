@@ -161,6 +161,7 @@ const Toolbar = () => {
       <Button variant={"icon"} tooltip="Toggle Audio">
         <Mic size={20} />
       </Button>
+      {/* Mobile only */}
       <div className="bg-black h-10 w-[1px] rounded-2xl lg:hidden " />
       <Sheet>
         <SheetTrigger className="lg:hidden" asChild>
@@ -193,6 +194,7 @@ const Toolbar = () => {
                     }));
                   }}
                   onBlur={() => {
+                    (document.body.style as any).zoom = 1;
                     nickName.length > 0 && setEditing(false);
                     nickName.length === 0 && inputRef.current?.focus();
                   }}
