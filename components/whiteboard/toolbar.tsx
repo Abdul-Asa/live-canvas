@@ -43,7 +43,7 @@ const Toolbar = () => {
   const [panMode, setpanMode] = useAtom(panModeAtom);
   const [canvas, setCanvas] = useAtom(canvasAtom);
   const editor = useAtomValue(editorAtom);
-  const [cursor, setCursor] = useAtom(cursorAtom);
+  const cursor = useAtomValue(cursorAtom);
   //online user stuff
   const [{ nickName, color }, updateMyPresence] = useMyPresence();
   const [editing, setEditing] = useState(false);
@@ -194,7 +194,7 @@ const Toolbar = () => {
                     }));
                   }}
                   onBlur={() => {
-                    document.body.style.scale = 1;
+                    document.body.style.scale = "1";
                     nickName.length > 0 && setEditing(false);
                     nickName.length === 0 && inputRef.current?.focus();
                   }}

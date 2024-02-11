@@ -8,10 +8,17 @@ import {
 import { CanvasLayer, CanvasLayerType, Polaroid, Sticker } from "@/lib/type";
 import { cn } from "@/lib/utils";
 import { useMutation, useMyPresence } from "@/liveblocks.config";
-import { PanInfo, motion } from "framer-motion";
+import {
+  PanInfo,
+  motion,
+  useDragControls,
+  useMotionValue,
+} from "framer-motion";
 import { useAtom, useAtomValue } from "jotai";
 import Image from "next/image";
 import React, { PointerEventHandler, useEffect, useRef } from "react";
+import { Button } from "../ui/button";
+import { X } from "lucide-react";
 
 const CanvasItem: React.FC<{ canvasLayer: CanvasLayer }> = ({
   canvasLayer,
@@ -45,38 +52,92 @@ const StickerComponent: React.FC<{ sticker: Sticker }> = ({ sticker }) => {
 
 const PolaroidComponent: React.FC<{ polaroid: Polaroid }> = ({ polaroid }) => {
   const { color, x, y, id } = polaroid;
-
   const canvasRef = useAtomValue(canvasRefAtom);
   const [selected, setSelected] = useAtom(selectedLayerAtom);
+  const [canvasList, updateCanvasList] = useAtom(canvasAtom);
+  const cursor = useAtomValue(cursorAtom);
+  const polaroidRed = useRef<HTMLDivElement>(null);
+
+  const dragControls = useDragControls();
+
+  const startDrag = (event: React.PointerEvent<HTMLDivElement>) => {
+    dragControls.start(event);
+  };
+
+  const handleDrag = (e: PointerEvent, info: PanInfo) => {
+    e.stopPropagation();
+    const polRect = polaroidRed.current?.getBoundingClientRect();
+    if (!polRect) return;
+    const offsetX = e.clientX - polRect.left;
+    const offsetY = e.clientY - polRect.top;
+
+    updateCanvasList((prev) => {
+      const oldMap = prev.get(id);
+      if (!oldMap) return prev;
+      const updatedPolaroid = {
+        ...oldMap,
+        x: cursor.x - offsetX,
+        y: cursor.y - offsetY,
+      };
+      prev.set(id, updatedPolaroid);
+      return new Map(prev);
+    });
+  };
+
   const handleSelect = (e: React.PointerEvent<HTMLDivElement>) => {
     e.stopPropagation();
     setSelected(id);
     // updateMyPresence({ selectedLayer: id });
   };
+
   return (
     <motion.div
-      className="flex flex-col"
+      ref={polaroidRed}
+      className="flex flex-col box-border absolute "
       onPointerDown={handleSelect}
+      drag
+      onDrag={handleDrag}
+      dragControls={dragControls}
+      dragListener={false}
+      dragMomentum={false}
+      dragConstraints={canvasRef !== null ? canvasRef : false}
       style={{
         x,
         y,
-        position: "relative",
-        width: "200px", // Set a fixed size or make it resizable
-        height: "250px",
-        backgroundColor: "white",
+        width: "300px", // Set a fixed size or make it resizable
+        height: "400px",
         boxShadow: "-0.6rem 0.6rem 0 rgba(29, 30, 28, 0.26)",
         zIndex: selected === id ? 5 : 4,
       }}
     >
-      <motion.div className="flex justify-end cursor-grab w-full" drag>
-        x cancel
+      <motion.div
+        onPointerDown={startDrag}
+        style={{ touchAction: "none", userSelect: "none" }}
+        className="flex justify-end cursor-move w-full bg-gray-500"
+      >
+        <Button
+          tooltip="close"
+          variant={"ghost"}
+          onClick={() => {
+            updateCanvasList((prev) => {
+              prev.delete(id);
+              return new Map(prev);
+            });
+          }}
+        >
+          <X size={20} />
+        </Button>
       </motion.div>
       {selected === id && (
-        <div className="absolute top-0 right-0 -translate-y-full  bg-red-500">
+        <div className="absolute top-0 right-0 -translate-y-full select-none bg-red-500">
           <p className="text-white truncate w-40">{id}</p>
         </div>
       )}
-      <div className="h-full w-full bg-gray-500">Content</div>
+      <motion.div className="h-full w-full bg-white">
+        Content
+        <br />
+        {x.toFixed(0)}:{y.toFixed(0)}
+      </motion.div>
     </motion.div>
   );
 };
