@@ -12,18 +12,6 @@ import { Separator } from "@/components/ui/separator";
 import { useMyPresence, useOthersMapped } from "@/liveblocks.config";
 import { useAtom } from "jotai";
 import { userAtom } from "@/lib/jotai-state";
-import { Button } from "@/components/ui/button";
-import {
-  SheetTrigger,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  Sheet,
-  SheetDescription,
-  SheetFooter,
-  SheetClose,
-} from "@/components/ui/sheet";
-import { Input } from "@/components/ui/input";
 
 const UserList = () => {
   const [trigger, setTrigger] = useState(false);
@@ -131,105 +119,6 @@ const UserList = () => {
           )}
         </div>
       </div>
-      {/** Mobile */}
-
-      <Sheet>
-        <SheetTrigger
-          className={cn(
-            "lg:hidden absolute top-[4%] right-0 z-1",
-            "text-black bg-secondary-light  border-2 rounded border-gray-700 ",
-            "scale-75 lg:scale-100 2xl:scale-150"
-          )}
-          asChild
-        >
-          <Button variant="ghost">
-            <User size={16} />
-          </Button>
-        </SheetTrigger>
-        <SheetContent>
-          <SheetHeader>
-            <SheetTitle>Online Users</SheetTitle>
-          </SheetHeader>
-          <div className="flex items-center h-10 w-full gap-10 justify-between">
-            {editing ? (
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  nickName.length > 0 && setEditing(false);
-                }}
-              >
-                <input
-                  ref={inputRef}
-                  autoFocus
-                  className="w-36 p-1"
-                  value={nickName}
-                  onChange={(e) => {
-                    updateMyPresence({ nickName: e.target.value });
-                    setUser((prev) => ({
-                      ...prev,
-                      nickName: e.target.value,
-                    }));
-                  }}
-                  onBlur={() => {
-                    nickName.length > 0 && setEditing(false);
-                    nickName.length === 0 && inputRef.current?.focus();
-                  }}
-                />
-              </form>
-            ) : (
-              <p className="w-36 truncate" onClick={() => setEditing(true)}>
-                {nickName}
-              </p>
-            )}
-            <DropdownMenu>
-              <DropdownMenuTrigger>
-                <div
-                  className="h-5 w-5 rounded border-copy border"
-                  style={{ backgroundColor: color }}
-                />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="border-black p-0 border-2 rounded">
-                <TwitterPicker
-                  width="140px"
-                  styles={{}}
-                  color={color}
-                  triangle="hide"
-                  onChange={(color) => {
-                    updateMyPresence({ color: color.hex });
-                    setUser((prev) => ({ ...prev, color: color.hex }));
-                  }}
-                />
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-
-          <div className="flex w-full flex-col justify-between gap-2 mt-4">
-            {otherUsers.map(([id, user]) => (
-              <>
-                <Separator className="bg-primary-dark" />
-                <div
-                  key={id}
-                  className="flex items-center justify-between w-full"
-                  style={{ color: user.color }}
-                >
-                  <p>{user.nickName}</p>
-                  <div
-                    className="h-5 w-5 rounded border-copy border"
-                    style={{ backgroundColor: user.color }}
-                  />
-                </div>
-              </>
-            ))}
-
-            {!otherUsers.length && (
-              <>
-                <Separator className="bg-primary-dark" />
-                <p className="text-center text-primary-dark">No users online</p>
-              </>
-            )}
-          </div>
-        </SheetContent>
-      </Sheet>
     </>
   );
 };
