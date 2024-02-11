@@ -54,9 +54,29 @@ const PolaroidComponent: React.FC<{ polaroid: Polaroid }> = ({ polaroid }) => {
     // updateMyPresence({ selectedLayer: id });
   };
   return (
-    <motion.div onPointerDown={handleSelect} style={{ x, y }}>
-      Polaroid
-      {selected === id && <div className="absolute w-20 h-20 bg-red-500"></div>}
+    <motion.div
+      className="flex flex-col"
+      onPointerDown={handleSelect}
+      style={{
+        x,
+        y,
+        position: "relative",
+        width: "200px", // Set a fixed size or make it resizable
+        height: "250px",
+        backgroundColor: "white",
+        boxShadow: "-0.6rem 0.6rem 0 rgba(29, 30, 28, 0.26)",
+        zIndex: selected === id ? 5 : 4,
+      }}
+    >
+      <motion.div className="flex justify-end cursor-grab w-full" drag>
+        x cancel
+      </motion.div>
+      {selected === id && (
+        <div className="absolute top-0 right-0 -translate-y-full  bg-red-500">
+          <p className="text-white truncate w-40">{id}</p>
+        </div>
+      )}
+      <div className="h-full w-full bg-gray-500">Content</div>
     </motion.div>
   );
 };

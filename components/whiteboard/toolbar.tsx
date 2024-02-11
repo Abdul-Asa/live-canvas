@@ -194,7 +194,7 @@ const Toolbar = () => {
                     }));
                   }}
                   onBlur={() => {
-                    (document.body.style as any).zoom = 1;
+                    document.body.style.scale = 1;
                     nickName.length > 0 && setEditing(false);
                     nickName.length === 0 && inputRef.current?.focus();
                   }}
