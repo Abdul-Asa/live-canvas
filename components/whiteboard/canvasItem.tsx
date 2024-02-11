@@ -4,6 +4,7 @@ import {
   canvasRefAtom,
   cursorAtom,
   selectedLayerAtom,
+  userAtom,
 } from "@/lib/jotai-state";
 import { CanvasLayer, CanvasLayerType, Polaroid, Sticker } from "@/lib/type";
 import { cn } from "@/lib/utils";
@@ -39,6 +40,7 @@ const StickerComponent: React.FC<{ sticker: Sticker }> = ({ sticker }) => {
   const [selected, setSelected] = useAtom(selectedLayerAtom);
   const [canvasList, updateCanvasList] = useAtom(canvasAtom);
   const cursor = useAtomValue(cursorAtom);
+  const { color } = useAtomValue(userAtom);
 
   const handleDrag = (e: PointerEvent, info: PanInfo) => {
     e.stopPropagation();
@@ -87,7 +89,12 @@ const StickerComponent: React.FC<{ sticker: Sticker }> = ({ sticker }) => {
       // onContextMenu={handleRightClick}
     >
       {selected === id && (
-        <div className="absolute top-0 right-0 -translate-y-full flex w-full justify-between select-none bg-red-500">
+        <div
+          className="absolute top-0 right-0 -translate-y-full flex w-full justify-between select-none"
+          style={{
+            background: color,
+          }}
+        >
           <p className="text-white truncate w-40">{id}</p>
           <Button
             tooltip="close"
@@ -204,7 +211,10 @@ const PolaroidComponent: React.FC<{ polaroid: Polaroid }> = ({ polaroid }) => {
         </Button>
       </motion.div>
       {selected === id && (
-        <div className="absolute top-0 right-0 -translate-y-full select-none bg-red-500">
+        <div
+          className="absolute top-0 right-0 -translate-y-full select-none"
+          style={{ background: color }}
+        >
           <p className="text-white truncate w-40">{id}</p>
         </div>
       )}

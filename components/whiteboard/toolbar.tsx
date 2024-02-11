@@ -79,7 +79,7 @@ const Toolbar = () => {
         type: CanvasLayerType.POLAROID,
         x: cursor.x,
         y: cursor.y,
-        color: "yellow",
+        color: user.color,
         id,
       });
 

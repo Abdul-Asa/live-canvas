@@ -274,13 +274,13 @@ const MiniNote = ({
   point: { x: number; y: number };
 }) => {
   const selected = useAtomValue(selectedLayerAtom);
+  const { color } = useAtomValue(userAtom);
 
   return (
     <motion.div
-      className={`bg-white border ${
-        selected === id ? "border-red-500" : "border-gray-700"
-      } pointer-events-none`}
+      className={`bg-white border pointer-events-none`}
       style={{
+        borderColor: selected === id ? color : "gray",
         width, // Set a fixed size or make it resizable
         height,
         position: "absolute",
