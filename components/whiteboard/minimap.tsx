@@ -1,7 +1,12 @@
 "use client";
 import { useViewportSize } from "@/hooks/use-viewport-size";
 import { CANVAS_SIZE } from "@/lib/constants";
-import { cameraAtom, cursorAtom, userAtom } from "@/lib/jotai-state";
+import {
+  cameraAtom,
+  canvasAtom,
+  cursorAtom,
+  userAtom,
+} from "@/lib/jotai-state";
 import { cn } from "@/lib/utils";
 import { PanInfo, motion } from "framer-motion";
 import { useAtom, useAtomValue } from "jotai";
@@ -29,6 +34,7 @@ const MiniMap = () => {
   const [camera, setCamera] = useAtom(cameraAtom);
   const [cursor, setCursor] = useAtom(cursorAtom);
   const user = useAtomValue(userAtom);
+  const canvas = useAtomValue(canvasAtom);
   //online
   const otherCursors = useOthersMapped((other) => other.presence);
 
@@ -109,6 +115,22 @@ const MiniMap = () => {
             transition={{ duration: 0 }}
             //   onDrag={handleDrag}
           ></motion.div>
+          {/*Notes*/}
+          {[...canvas.values()].map((note) => (
+            <MiniNote
+              key={note.id}
+              width={
+                note.type == "sticker" ? note.width / divider : 300 / divider
+              }
+              height={
+                note.type == "sticker" ? note.height / divider : 400 / divider
+              }
+              point={{
+                x: note.x / divider,
+                y: note.y / divider,
+              }}
+            />
+          ))}
           <MiniCursor
             color={user.color}
             cursorPoint={{
@@ -227,6 +249,37 @@ const MiniCursor = ({
       }}
       initial={{ x: cursorPoint.x, y: cursorPoint.y }}
       animate={{ x: cursorPoint.x, y: cursorPoint.y }}
+      transition={{
+        type: "spring",
+        damping: 30,
+        mass: 0.8,
+        stiffness: 350,
+      }}
+    />
+  );
+};
+
+const MiniNote = ({
+  point,
+  width,
+  height,
+}: {
+  width: number;
+  height: number;
+  point: { x: number; y: number };
+}) => {
+  return (
+    <motion.div
+      className=" bg-white border border-gray-700"
+      style={{
+        width, // Set a fixed size or make it resizable
+        height,
+        position: "absolute",
+        top: "0",
+        left: "0",
+      }}
+      initial={{ x: point.x, y: point.y }}
+      animate={{ x: point.x, y: point.y }}
       transition={{
         type: "spring",
         damping: 30,
