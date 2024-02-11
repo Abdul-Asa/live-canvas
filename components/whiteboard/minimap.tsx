@@ -205,6 +205,23 @@ const MiniMap = () => {
               transition={{ duration: 0 }}
               //   onDrag={handleDrag}
             ></motion.div>
+            {/*Notes*/}
+            {[...canvas.values()].map((note) => (
+              <MiniNote
+                key={note.id}
+                id={note.id}
+                width={
+                  note.type == "sticker" ? note.width / divider : 300 / divider
+                }
+                height={
+                  note.type == "sticker" ? note.height / divider : 400 / divider
+                }
+                point={{
+                  x: note.x / divider,
+                  y: note.y / divider,
+                }}
+              />
+            ))}
             <MiniCursor
               color={user.color}
               cursorPoint={{
