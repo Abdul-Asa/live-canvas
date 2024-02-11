@@ -5,6 +5,7 @@ import {
   cameraAtom,
   canvasAtom,
   cursorAtom,
+  selectedLayerAtom,
   userAtom,
 } from "@/lib/jotai-state";
 import { cn } from "@/lib/utils";
@@ -35,6 +36,7 @@ const MiniMap = () => {
   const [cursor, setCursor] = useAtom(cursorAtom);
   const user = useAtomValue(userAtom);
   const canvas = useAtomValue(canvasAtom);
+
   //online
   const otherCursors = useOthersMapped((other) => other.presence);
 
@@ -119,6 +121,7 @@ const MiniMap = () => {
           {[...canvas.values()].map((note) => (
             <MiniNote
               key={note.id}
+              id={note.id}
               width={
                 note.type == "sticker" ? note.width / divider : 300 / divider
               }
@@ -262,15 +265,21 @@ const MiniCursor = ({
 const MiniNote = ({
   point,
   width,
+  id,
   height,
 }: {
+  id: string;
   width: number;
   height: number;
   point: { x: number; y: number };
 }) => {
+  const selected = useAtomValue(selectedLayerAtom);
+
   return (
     <motion.div
-      className=" bg-white border border-gray-700"
+      className={`bg-white border ${
+        selected === id ? "border-red-500" : "border-gray-700"
+      } pointer-events-none`}
       style={{
         width, // Set a fixed size or make it resizable
         height,
