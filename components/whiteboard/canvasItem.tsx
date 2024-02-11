@@ -82,6 +82,7 @@ const StickerComponent: React.FC<{ sticker: Sticker }> = ({ sticker }) => {
         cursor: "grab",
         zIndex: selected === id ? 5 : 4,
       }}
+      onTouchStart={(e) => e.stopPropagation()}
       // onDoubleClick={handleDoubleClick}
       // onContextMenu={handleRightClick}
     >
@@ -168,6 +169,7 @@ const PolaroidComponent: React.FC<{ polaroid: Polaroid }> = ({ polaroid }) => {
       ref={polaroidRed}
       className="flex flex-col box-border absolute "
       onPointerDown={handleSelect}
+      onTouchStart={(e) => e.stopPropagation()}
       drag
       onDrag={handleDrag}
       dragControls={dragControls}
