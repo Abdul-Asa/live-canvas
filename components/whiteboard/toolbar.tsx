@@ -55,36 +55,37 @@ const Toolbar = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const otherUsers = useOthersMapped((other) => other.presence);
   const [user, setUser] = useAtom(userAtom);
-  const addLayerOnline = useMutation(
-    ({ storage }, id: string, x: number, y: number, src?: string) => {
-      if (src) {
-        storage.get("canvas").set(
-          id,
-          new LiveObject({
-            id,
-            type: "sticker",
-            x,
-            y,
-            src,
-            height: 200,
-            width: 200,
-          })
-        );
-      } else {
-        storage.get("canvas").set(
-          id,
-          new LiveObject({
-            id,
-            type: "polaroid",
-            x,
-            y,
-            color: user.color,
-          })
-        );
-      }
-    },
-    []
-  );
+
+  // const addLayerOnline = useMutation(
+  //   ({ storage }, id: string, x: number, y: number, src?: string) => {
+  //     if (src) {
+  //       storage.get("canvas").set(
+  //         id,
+  //         new LiveObject({
+  //           id,
+  //           type: "sticker",
+  //           x,
+  //           y,
+  //           src,
+  //           height: 200,
+  //           width: 200,
+  //         })
+  //       );
+  //     } else {
+  //       storage.get("canvas").set(
+  //         id,
+  //         new LiveObject({
+  //           id,
+  //           type: "polaroid",
+  //           x,
+  //           y,
+  //           color: user.color,
+  //         })
+  //       );
+  //     }
+  //   },
+  //   []
+  // );
 
   const togglePanMode = () => {
     setpanMode((prev) => !prev);

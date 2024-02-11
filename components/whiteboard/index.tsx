@@ -11,7 +11,12 @@ import OtherCursors from "./online/other-cursors";
 import { canvasAtom } from "@/lib/jotai-state";
 import { useAtom } from "jotai";
 import CanvasItem from "./canvasItem";
-import { useMutation, useStorage } from "@/liveblocks.config";
+import {
+  useBroadcastEvent,
+  useEventListener,
+  useMutation,
+  useStorage,
+} from "@/liveblocks.config";
 import { CanvasLayer } from "@/lib/type";
 import { LiveMap, LiveObject } from "@liveblocks/client";
 import { useEffect } from "react";
@@ -20,6 +25,7 @@ const Whiteboard = () => {
   useDisableScrollBounce();
   const [canvas, setCanvas] = useAtom(canvasAtom);
   const onlineCanvas = useStorage((room) => room.canvas);
+  const broadcast = useBroadcastEvent();
 
   const updateOnlineCanvas = useMutation(
     ({ storage }, canvas: Map<string, CanvasLayer>) => {
@@ -56,9 +62,15 @@ const Whiteboard = () => {
     []
   );
 
+  // useEventListener(({ connectionId, event, user }) => {
+  //   if (event.type === "pull") {
+  //     setCanvas(onlineCanvas as Map<string, CanvasLayer>);
+  //   }
+  // });
+
   useEffect(() => {
     updateOnlineCanvas(canvas);
-  }, [canvas]);
+  }, [broadcast, canvas]);
 
   //make it offline first in the future
 
