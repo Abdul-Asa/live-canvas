@@ -1,5 +1,5 @@
 import { useOther, useOthersMapped } from "@/liveblocks.config";
-import Cursor from "../cursor";
+import Cursor from "../../cursor";
 
 const OtherCursors = () => {
   const cursors = useOthersMapped((other) => other.presence);

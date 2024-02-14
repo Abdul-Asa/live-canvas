@@ -8,8 +8,8 @@ export const LOTTIE_LINKS = [
 ];
 
 export const STICKER_LINKS = [
-  "/run.gif",
-  "/sunglasses.png",
+  "/stickers/run.gif",
+  "/stickers/sunglasses.png",
   "/next.svg",
-  "/amogus.webp",
+  "/stickers/amogus.webp",
 ];

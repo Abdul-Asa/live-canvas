@@ -11,17 +11,16 @@ const Cursor = ({
   cursor,
   isMobile,
 }: {
-  nickName?: string;
-  color?: string;
+  nickName: string;
+  color: string;
   isClient?: boolean;
-  cursor?: { x: number; y: number };
-  isMobile?: boolean;
+  cursor: { x: number; y: number };
+  isMobile: boolean;
 }) => {
-  const [{ x, y }, setCursorPos] = useAtom(cursorAtom);
-  const user = useAtomValue(userAtom);
+  const { x, y } = cursor;
 
   if (isClient) {
-    return user.isMobile ? (
+    return isMobile ? (
       <motion.svg
         width="18"
         height="24"
@@ -40,7 +39,7 @@ const Cursor = ({
           r="8"
           stroke="black"
           strokeWidth="1"
-          fill={user.color}
+          fill={color}
         />
         <circle
           cx="9"
@@ -58,13 +57,13 @@ const Cursor = ({
           position: "absolute",
           top: "0",
           left: "0",
-          backgroundColor: user.color,
+          backgroundColor: color,
           translateX: x,
           translateY: y,
         }}
       >
         <p className="max-w-40 truncate p-1">
-          {user.nickName ? user.nickName : "Anonymous"}
+          {nickName ? nickName : "Anonymous"}
         </p>
       </motion.span>
     );

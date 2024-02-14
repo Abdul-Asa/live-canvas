@@ -1,13 +1,17 @@
-import { useEffect, useState } from "react";
+import { deviceInfoAtom } from "@/lib/jotai-state";
+import { useAtom } from "jotai";
+import { useEffect } from "react";
 
 export const useViewportSize = () => {
-  const [width, setWidth] = useState(0);
-  const [height, setHeight] = useState(0);
+  const [{ width, height }, updateViewPortSize] = useAtom(deviceInfoAtom);
 
   useEffect(() => {
     const handleResize = () => {
-      setWidth(window.innerWidth);
-      setHeight(window.innerHeight);
+      updateViewPortSize((prev) => ({
+        ...prev,
+        width: window.innerWidth,
+        height: window.innerHeight,
+      }));
     };
 
     handleResize();
