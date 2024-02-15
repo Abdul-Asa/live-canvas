@@ -10,6 +10,7 @@ import { cursorAtom, userAtom } from "@/lib/jotai-state";
 import OtherCursors from "./other-cursors";
 import { useEffect } from "react";
 import MiniMap from "./minimap";
+<<<<<<< HEAD
 import {
   useHMSStore,
   selectIsConnectedToRoom,
@@ -17,6 +18,18 @@ import {
   selectLocalPeer,
   selectRemotePeers,
 } from "@100mslive/react-sdk";
+=======
+import UserList from "./online/online-users";
+import OnlineChat from "./online/chat";
+import OtherCursors from "./online/other-cursors";
+import { canvasAtom } from "@/lib/jotai-state";
+import { useAtom } from "jotai";
+import CanvasItem from "./canvasItem";
+import { useStorage } from "@/liveblocks.config";
+import { use, useEffect } from "react";
+import { CanvasLayer, CanvasLayerType } from "@/lib/type";
+import { shallow } from "@liveblocks/client";
+>>>>>>> main
 
 const Whiteboard = () => {
   const isMobile = useIsMobile();
@@ -27,6 +40,7 @@ const Whiteboard = () => {
   const localPeer = useHMSStore(selectLocalPeer);
 
   useDisableScrollBounce();
+<<<<<<< HEAD
 
   useEffect(() => {
     async function loginToVideoRoom() {
@@ -68,6 +82,50 @@ const Whiteboard = () => {
             peer={localPeer}
           />
         )}
+=======
+  const [canvas, setCanvas] = useAtom(canvasAtom);
+  //make it offline first in the future
+  const onlineCanvas = useStorage((root) => root.canvas, shallow);
+
+  useEffect(() => {
+    if (onlineCanvas) {
+      const newCanvas: Map<string, CanvasLayer> = new Map();
+      onlineCanvas.forEach((value, key) => {
+        if (value.type === "sticker") {
+          newCanvas.set(key, {
+            id: key,
+            type: CanvasLayerType.STICKER,
+            x: value.x,
+            y: value.y,
+            src: value.src!,
+            width: value.width!,
+            height: value.height!,
+          });
+        }
+        if (value.type === "polaroid") {
+          newCanvas.set(key, {
+            id: key,
+            type: CanvasLayerType.POLAROID,
+            x: value.x,
+            y: value.y,
+            color: value.color!,
+          });
+        }
+      });
+      setCanvas(newCanvas);
+    }
+  }, [onlineCanvas, setCanvas]);
+
+  return (
+    <div className="relative overflow-hidden h-screen flex items-center justify-center">
+      <Script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js" />
+      <Canvas>
+        <Cursor isClient />
+        {[...canvas.values()].map((item) => {
+          return <CanvasItem key={item.id} canvasLayer={item} />;
+        })}
+        {/* Online cursors */}
+>>>>>>> main
         <OtherCursors />
       </CanvasBoard>
       <Toolbar />

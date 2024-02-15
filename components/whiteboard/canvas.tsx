@@ -29,7 +29,12 @@ const CanvasBoard = ({ children }: { children: React.ReactNode }) => {
   };
 
   const handleScroll = (event: React.WheelEvent<HTMLDivElement>) => {
+<<<<<<< HEAD
     setCamera((prev) => {
+=======
+    updateCursorPos(event);
+    setPos((prev) => {
+>>>>>>> main
       let newX = prev.x - event.deltaX;
       let newY = prev.y - event.deltaY;
 
@@ -104,7 +109,11 @@ const CanvasBoard = ({ children }: { children: React.ReactNode }) => {
       onWheel={handleScroll}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
+<<<<<<< HEAD
       onPointerUp={onPointerUp}
+=======
+      onPointerLeave={() => updateMyPresence({ cursor: null })}
+>>>>>>> main
     >
       {children}
     </motion.div>
