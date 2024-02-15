@@ -4,12 +4,8 @@ import { ClientSideSuspense } from "@liveblocks/react";
 import { RoomProvider } from "@/liveblocks.config";
 import { useAtom, useAtomValue } from "jotai";
 import { userAtom } from "@/lib/jotai-state";
-<<<<<<< HEAD
 import { LiveMap, LiveObject } from "@liveblocks/client";
 import useIsMobile from "@/hooks/use-is-mobile";
-=======
-import { LiveMap } from "@liveblocks/client";
->>>>>>> main
 
 export function Room({ children }: { children: ReactNode }) {
   const userState = useAtomValue(userAtom);
@@ -22,10 +18,7 @@ export function Room({ children }: { children: ReactNode }) {
         cursor: null,
         nickName: userState.nickName,
         color: userState.color,
-<<<<<<< HEAD
         isMobile: isMobile,
-=======
->>>>>>> main
         selectedLayer: null,
       }}
       initialStorage={{

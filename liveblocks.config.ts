@@ -14,10 +14,7 @@ type Presence = {
   cursor: { x: number; y: number } | null;
   color: string;
   nickName: string;
-<<<<<<< HEAD
   isMobile: boolean;
-=======
->>>>>>> main
   selectedLayer: string | null;
 };
 
@@ -40,27 +37,7 @@ type Storage = {
     }>
   >;
   // author: LiveObject<{ firstName: string, lastName: string }>,
-  canvas: LiveMap<
-    string,
-    LiveObject<
-      | {
-          type: string;
-          src: string;
-          x: number;
-          y: number;
-          width: number;
-          height: number;
-          id: string;
-        }
-      | {
-          type: string;
-          x: number;
-          y: number;
-          color: string;
-          id: string;
-        }
-    >
-  >;
+
   // ...
 };
 
