@@ -35,7 +35,7 @@ const Whiteboard = () => {
       });
       try {
         await hmsActions.join({
-          userName: nickName + crypto.randomUUID().slice(0, 5),
+          userName: nickName,
           authToken,
           rememberDeviceSelection: true,
           settings: {

@@ -2,7 +2,7 @@ import { atom } from "jotai";
 
 const userAtom = atom({
   color: "#000000",
-  nickName: "Guest",
+  nickName: "Guest:" + crypto.randomUUID().slice(0, 5),
 });
 
 const deviceInfoAtom = atom({

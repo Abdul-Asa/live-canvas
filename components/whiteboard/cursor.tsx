@@ -1,5 +1,10 @@
 import { cn } from "@/lib/utils";
-import { useVideo } from "@100mslive/react-sdk";
+import {
+  HMSPeer,
+  selectIsPeerVideoEnabled,
+  useHMSStore,
+  useVideo,
+} from "@100mslive/react-sdk";
 import { motion } from "framer-motion";
 
 //refactor redundant props
@@ -16,12 +21,12 @@ const Cursor = ({
   isClient?: boolean;
   cursor: { x: number; y: number };
   isMobile: boolean;
-  peer?: any;
+  peer?: HMSPeer;
 }) => {
   const { x, y } = cursor;
-
+  const videoEnabled = useHMSStore(selectIsPeerVideoEnabled(peer?.id));
   const { videoRef } = useVideo({
-    trackId: peer.videoTrack,
+    trackId: peer?.videoTrack,
   });
 
   if (isClient) {
@@ -75,15 +80,17 @@ const Cursor = ({
             {nickName ? nickName : "Anonymous"}
           </p>
         </span>
-        <div className="absolute top-10 -left-5 border w-40 h-40 flex items-center justify-center bg-gray-300 rounded-full">
-          <video
-            className=" object-fill w-full h-full "
-            ref={videoRef}
-            autoPlay
-            muted
-            playsInline
-          ></video>
-        </div>
+        {videoEnabled && (
+          <div className="absolute top-10 -left-5 border w-40 h-40 flex items-center justify-center bg-gray-300 rounded-full">
+            <video
+              className="object-cover w-full h-full rounded-full"
+              ref={videoRef}
+              autoPlay
+              muted
+              playsInline
+            ></video>
+          </div>
+        )}
       </motion.div>
     );
   }
@@ -153,15 +160,17 @@ const Cursor = ({
       >
         <p className="max-w-40 truncate p-1">{nickName ? nickName : "Guest"}</p>
       </div>
-      <div className="absolute top-10 -left-5 border w-40 h-40 flex items-center justify-center bg-gray-300 rounded-full">
-        <video
-          className=" object-fill w-full h-full "
-          ref={videoRef}
-          autoPlay
-          muted
-          playsInline
-        ></video>
-      </div>
+      {videoEnabled && (
+        <div className="absolute top-10 -left-5 border w-40 h-40 flex items-center justify-center bg-gray-300 rounded-full">
+          <video
+            className=" object-fill w-full h-full "
+            ref={videoRef}
+            autoPlay
+            muted
+            playsInline
+          ></video>
+        </div>
+      )}
     </motion.div>
   );
 };

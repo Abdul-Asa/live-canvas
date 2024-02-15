@@ -5,6 +5,9 @@ import {
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuGroup,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
 } from "../ui/dropdown-menu";
 import {
   ArrowBigLeft,
@@ -21,7 +24,7 @@ import { Button } from "../ui/button";
 import { panModeAtom } from "@/lib/jotai-state";
 import { useAtom } from "jotai";
 import { Separator } from "../ui/separator";
-import { useState } from "react";
+import React, { useState } from "react";
 import { DeviceType, useAVToggle, useDevices } from "@100mslive/react-sdk";
 
 const Toolbar = () => {
@@ -132,24 +135,25 @@ const Toolbar = () => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="border-black p-4 border-2 rounded  overflow-y-scroll">
-          <div>
-            <h1>Device Settings</h1>
+          <DropdownMenuLabel>Device Settings</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup>
             <Select
               title="Camera"
               value={selectedDeviceIDs.videoInput}
               list={videoInput}
-              onChange={(e) =>
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
                 updateDevice({
                   deviceId: e.target.value,
                   deviceType: DeviceType.videoInput,
                 })
               }
-            />
+            />{" "}
             <Select
               title="Microphone"
               value={selectedDeviceIDs.audioInput}
               list={audioInput}
-              onChange={(e) =>
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
                 updateDevice({
                   deviceId: e.target.value,
                   deviceType: DeviceType.audioInput,
@@ -160,14 +164,14 @@ const Toolbar = () => {
               title="Speaker"
               value={selectedDeviceIDs.audioOutput}
               list={audioOutput}
-              onChange={(e) =>
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
                 updateDevice({
                   deviceId: e.target.value,
                   deviceType: DeviceType.audioOutput,
                 })
               }
             />
-          </div>
+          </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
@@ -176,11 +180,11 @@ const Toolbar = () => {
 
 const Select = ({ list, value, onChange, title }: any) => {
   return (
-    <div>
+    <div className="">
       <span>{title}:</span>
       {list?.length ? (
         <select onChange={onChange} value={value}>
-          {list.map((device) => (
+          {list.map((device: MediaDeviceInfo) => (
             <option value={device.deviceId} key={device.deviceId}>
               {device.label}
             </option>

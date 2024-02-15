@@ -11,7 +11,7 @@ const OtherCursors = () => {
       return null;
     }
 
-    const peer = remotePeers.find((p) => p.name.includes(nickName));
+    const peer = remotePeers.find((p) => p.name === nickName);
     if (!peer) return null;
     return (
       <Cursor
