@@ -31,10 +31,7 @@ const Cursor = ({
 
   if (isClient) {
     return isMobile ? (
-      <motion.svg
-        width="18"
-        height="24"
-        viewBox="0 0 18 24"
+      <motion.div
         style={{
           position: "absolute",
           top: "0",
@@ -43,23 +40,36 @@ const Cursor = ({
           translateY: y,
         }}
       >
-        <circle
-          cx="9"
-          cy="12"
-          r="8"
-          stroke="black"
-          strokeWidth="1"
-          fill={color}
-        />
-        <circle
-          cx="9"
-          cy="12"
-          r="4"
-          stroke="black"
-          strokeWidth="1"
-          fill="white"
-        />
-      </motion.svg>
+        <svg width="18" height="24" viewBox="0 0 18 24">
+          <circle
+            cx="9"
+            cy="12"
+            r="8"
+            stroke="black"
+            strokeWidth="1"
+            fill={color}
+          />
+          <circle
+            cx="9"
+            cy="12"
+            r="4"
+            stroke="black"
+            strokeWidth="1"
+            fill="white"
+          />
+        </svg>
+        {videoEnabled && (
+          <div className="absolute top-10 -left-5 border w-40 h-40 flex items-center justify-center bg-gray-300 rounded-full">
+            <video
+              className="object-cover w-full h-full rounded-full"
+              ref={videoRef}
+              autoPlay
+              muted
+              playsInline
+            ></video>
+          </div>
+        )}
+      </motion.div>
     ) : (
       <motion.div
         style={{
