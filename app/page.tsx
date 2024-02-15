@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { userAtom } from "@/lib/jotai-state";
+// import { useHMSActions } from "@100mslive/react-sdk";
 import { useAtom } from "jotai";
 import { useRouter } from "next/navigation";
 import { TwitterPicker } from "react-color";
@@ -10,12 +11,37 @@ import { TwitterPicker } from "react-color";
 export default function Home() {
   const [user, setUser] = useAtom(userAtom);
   const route = useRouter();
+  // const hmsActions = useHMSActions();
+
+  //Add chat
+  //Make my own color picker component
+  //add video chat
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+
+    if (!user.nickName || !user.color) return;
+    // use room code to fetch auth token
+    // const authToken = await hmsActions.getAuthTokenByRoomCode({
+    //   roomCode: "hfq-hywl-tvu",
+    // });
+
+    try {
+      // await hmsActions.join({ userName: user.nickName, authToken });
+      route.push("/room");
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   return (
     <main className="flex flex-col h-screen justify-center items-center py-24">
-      <h1 className="text-5xl font-extrabold leading-tight sm:text-extra">
+      <h1 className="lg:text-5xl font-extrabold leading-tight text-3xl">
         Live Whiteboard
       </h1>
-      <div className="mt-6 flex flex-col text-left  gap-6">
+      <form
+        onSubmit={handleSubmit}
+        className="mt-6 flex flex-col text-left  gap-6"
+      >
         <div className="flex flex-col gap-2">
           <label className="self-start font-bold leading-tight">
             Enter your name
@@ -31,8 +57,6 @@ export default function Home() {
                 nickName: e.target.value.slice(0, 10),
               }))
             }
-            required
-            autoComplete="off"
           />
           <Separator className="bg-primary-dark" />
           <label className="self-start font-bold leading-tight">
@@ -50,14 +74,10 @@ export default function Home() {
           />
         </div>
 
-        <Button
-          disabled={!user.nickName}
-          variant={"outline"}
-          onClick={() => route.push("/room")}
-        >
+        <Button disabled={!user.nickName} variant={"outline"} type="submit">
           Join Room
         </Button>
-      </div>
+      </form>
     </main>
   );
 }

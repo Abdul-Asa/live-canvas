@@ -14,6 +14,7 @@ type Presence = {
   cursor: { x: number; y: number } | null;
   color: string;
   nickName: string;
+  isMobile: boolean;
   selectedLayer: string | null;
 };
 
@@ -36,6 +37,7 @@ type Storage = {
     }>
   >;
   // author: LiveObject<{ firstName: string, lastName: string }>,
+
   // ...
 };
 
@@ -50,7 +52,7 @@ type UserMeta = {
 // Optionally, the type of custom events broadcast and listened to in this
 // room. Use a union for multiple events. Must be JSON-serializable.
 type RoomEvent = {
-  // type: "NOTIFICATION",
+  type: "push" | "pull";
   // ...
 };
 

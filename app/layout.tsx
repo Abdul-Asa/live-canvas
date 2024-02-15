@@ -3,7 +3,7 @@ import { Chivo_Mono } from "next/font/google";
 import "./globals.css";
 import { Provider } from "@/components/providers/jotai-provider";
 import { cn } from "@/lib/utils";
-
+import { HMSRoomProvider } from "@/components/providers/100ms-provider";
 const chivo = Chivo_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {

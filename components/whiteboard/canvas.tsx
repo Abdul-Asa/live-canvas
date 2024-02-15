@@ -1,49 +1,35 @@
-"use client";
 import { useViewportSize } from "@/hooks/use-viewport-size";
 import { CANVAS_SIZE } from "@/lib/constants";
-import {
-  cameraAtom,
-  canvasRefAtom,
-  cursorAtom,
-  panModeAtom,
-  selectedLayerAtom,
-} from "@/lib/jotai-state";
-import { useMyPresence } from "@/liveblocks.config";
+import { cameraAtom, cursorAtom, panModeAtom } from "@/lib/jotai-state";
+import { useSelf, useUpdateMyPresence } from "@/liveblocks.config";
+import { useVideo } from "@100mslive/react-sdk";
 import { motion } from "framer-motion";
-import { useAtom, useSetAtom } from "jotai";
-import { useEffect, useRef, useState } from "react";
+import { useAtom } from "jotai";
+import { useRef, useState } from "react";
 
-const Canvas = ({ children }: { children: React.ReactNode }) => {
+const CanvasBoard = ({ children }: { children: React.ReactNode }) => {
   const canvasRef = useRef<HTMLDivElement>(null);
-  const [panMode, setpanMode] = useAtom(panModeAtom);
-  const [isDragging, setIsDragging] = useState(false);
-  const [pos, setPos] = useAtom(cameraAtom);
   const { height, width } = useViewportSize();
-  const setCursorPos = useSetAtom(cursorAtom);
-  const setRef = useSetAtom(canvasRefAtom);
-  const setSelectedLayer = useSetAtom(selectedLayerAtom);
-  const [, updateMyPresence] = useMyPresence();
+  const [panMode] = useAtom(panModeAtom);
+  const [pos, setCamera] = useAtom(cameraAtom);
+  const [isDragging, setIsDragging] = useState(false);
+  const [cursor, setCursorPos] = useAtom(cursorAtom);
+  const {
+    presence: { nickName },
+  } = useSelf();
+  const updateMyPresence = useUpdateMyPresence();
 
   const updateCursorPos = (event: React.MouseEvent<HTMLDivElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
     setCursorPos({ x, y });
+    //online
     updateMyPresence({ cursor: { x, y } });
   };
 
-  const updateMobileCursorPos = (event: React.TouchEvent<HTMLDivElement>) => {
-    const rect = event.currentTarget.getBoundingClientRect();
-    const x = event.touches[0].clientX - rect.left;
-    const y = event.touches[0].clientY - rect.top;
-    setCursorPos({ x, y });
-    updateMyPresence({ cursor: { x, y } });
-  };
-
-  //Scroll Mode
   const handleScroll = (event: React.WheelEvent<HTMLDivElement>) => {
-    updateCursorPos(event);
-    setPos((prev) => {
+    setCamera((prev) => {
       let newX = prev.x - event.deltaX;
       let newY = prev.y - event.deltaY;
 
@@ -57,14 +43,16 @@ const Canvas = ({ children }: { children: React.ReactNode }) => {
 
       return { x: newX, y: newY };
     });
+    updateCursorPos(event);
   };
 
-  //Drag Mode
   const onPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
-    setSelectedLayer(null);
+    console.log("onPointerDown");
+    updateCursorPos(event);
+    // setSelectedLayer(null);
     if (!panMode) return;
     setIsDragging(true);
-    setPos((prev) => ({
+    setCamera((prev) => ({
       ...prev,
       lastX: event.clientX,
       lastY: event.clientY,
@@ -75,7 +63,7 @@ const Canvas = ({ children }: { children: React.ReactNode }) => {
     updateCursorPos(event);
     if (!panMode) return;
     if (!isDragging) return;
-    setPos((prev) => {
+    setCamera((prev) => {
       if (!prev.lastX || !prev.lastY) return prev;
       let newX = prev.x + event.clientX - prev.lastX;
       let newY = prev.y + event.clientY - prev.lastY;
@@ -96,76 +84,31 @@ const Canvas = ({ children }: { children: React.ReactNode }) => {
     setIsDragging(false);
   };
 
-  //Mobile touch events
-  const handleTouchMove = (event: React.TouchEvent<HTMLDivElement>) => {
-    if (!panMode) return;
-    if (event.touches.length === 1) {
-      const touch = event.touches[0];
-      setPos((prev) => {
-        if (!prev.lastX || !prev.lastY) return prev;
-        let newX = prev.x + touch.clientX - prev.lastX;
-        let newY = prev.y + touch.clientY - prev.lastY;
-
-        const maxX = CANVAS_SIZE / 2 - width / 2;
-        const maxY = CANVAS_SIZE / 2 - height / 2;
-        const minX = -(CANVAS_SIZE / 2) + width / 2;
-        const minY = -(CANVAS_SIZE / 2) + height / 2;
-
-        newX = Math.min(Math.max(newX, minX), maxX);
-        newY = Math.min(Math.max(newY, minY), maxY);
-
-        return { x: newX, y: newY, lastX: touch.clientX, lastY: touch.clientY };
-      });
-    }
-  };
-
-  const handleTouchStart = (event: React.TouchEvent<HTMLDivElement>) => {
-    updateMobileCursorPos(event);
-    setpanMode(true);
-    if (event.touches.length === 1) {
-      const touch = event.touches[0];
-      setPos((prev) => ({
-        ...prev,
-        lastX: touch.clientX,
-        lastY: touch.clientY,
-      }));
-    }
-  };
-
-  const handleTouchEnd = () => {
-    setpanMode(false);
-  };
-
-  useEffect(() => {
-    if (canvasRef.current) setRef(canvasRef);
-  }, [canvasRef, setRef]);
-
   return (
     <motion.div
+      className={`border-8 absolute border-yellow-500 ${
+        panMode ? " cursor-move" : "cursor-auto"
+      }`}
       ref={canvasRef}
-      className="border-8 fixed border-red-500 "
       style={{
+        x: pos.x,
+        y: pos.y,
         height: CANVAS_SIZE,
         width: CANVAS_SIZE,
-        translateX: pos.x,
-        translateY: pos.y,
+
         backgroundImage:
           "linear-gradient(to right, black 2px, transparent 1px), linear-gradient(to bottom, black 2px, transparent 1px)",
         backgroundSize: "50px 50px",
         backgroundColor: "#dadad2",
       }}
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
       onWheel={handleScroll}
       onPointerDown={onPointerDown}
-      onPointerUp={onPointerUp}
       onPointerMove={onPointerMove}
-      onPointerLeave={() => updateMyPresence({ cursor: null })}
+      onPointerUp={onPointerUp}
     >
       {children}
     </motion.div>
   );
 };
 
-export default Canvas;
+export default CanvasBoard;
