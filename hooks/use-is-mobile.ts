@@ -1,6 +1,6 @@
 import { deviceInfoAtom } from "@/lib/jotai-state";
 import { useAtom } from "jotai";
-import { use, useEffect } from "react";
+import { useEffect } from "react";
 
 function useIsMobile() {
   const [{ isMobile }, setIsMobile] = useAtom(deviceInfoAtom);

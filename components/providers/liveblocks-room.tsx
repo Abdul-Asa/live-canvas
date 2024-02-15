@@ -3,13 +3,13 @@ import { ReactNode, use } from "react";
 import { ClientSideSuspense } from "@liveblocks/react";
 import { RoomProvider } from "@/liveblocks.config";
 import { useAtom, useAtomValue } from "jotai";
-import { userAtom } from "@/lib/jotai-state";
+import { deviceInfoAtom, userAtom } from "@/lib/jotai-state";
 import { LiveMap, LiveObject } from "@liveblocks/client";
 import useIsMobile from "@/hooks/use-is-mobile";
 
 export function Room({ children }: { children: ReactNode }) {
   const userState = useAtomValue(userAtom);
-  const isMobile = useIsMobile();
+  const [{ isMobile }] = useAtom(deviceInfoAtom);
 
   return (
     <RoomProvider

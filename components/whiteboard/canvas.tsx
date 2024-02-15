@@ -2,7 +2,6 @@ import { useViewportSize } from "@/hooks/use-viewport-size";
 import { CANVAS_SIZE } from "@/lib/constants";
 import { cameraAtom, cursorAtom, panModeAtom } from "@/lib/jotai-state";
 import { useSelf, useUpdateMyPresence } from "@/liveblocks.config";
-import { useVideo } from "@100mslive/react-sdk";
 import { motion } from "framer-motion";
 import { useAtom } from "jotai";
 import { useRef, useState } from "react";

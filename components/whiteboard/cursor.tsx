@@ -163,7 +163,7 @@ const Cursor = ({
       {videoEnabled && (
         <div className="absolute top-10 -left-5 border w-40 h-40 flex items-center justify-center bg-gray-300 rounded-full">
           <video
-            className=" object-fill w-full h-full "
+            className="object-cover w-full h-full rounded-full"
             ref={videoRef}
             autoPlay
             muted
