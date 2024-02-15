@@ -9,6 +9,7 @@ const deviceInfoAtom = atom({
   isMobile: false,
   height: 800,
   width: 1080,
+  deviceType: "desktop",
 });
 
 const panModeAtom = atom(false);

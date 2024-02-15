@@ -1,7 +1,6 @@
-import { cursorAtom, userAtom } from "@/lib/jotai-state";
 import { cn } from "@/lib/utils";
+import { useVideo } from "@100mslive/react-sdk";
 import { motion } from "framer-motion";
-import { useAtom, useAtomValue } from "jotai";
 
 //refactor redundant props
 const Cursor = ({
@@ -10,14 +9,20 @@ const Cursor = ({
   isClient,
   cursor,
   isMobile,
+  peer,
 }: {
   nickName: string;
   color: string;
   isClient?: boolean;
   cursor: { x: number; y: number };
   isMobile: boolean;
+  peer?: any;
 }) => {
   const { x, y } = cursor;
+
+  const { videoRef } = useVideo({
+    trackId: peer.videoTrack,
+  });
 
   if (isClient) {
     return isMobile ? (
@@ -51,21 +56,35 @@ const Cursor = ({
         />
       </motion.svg>
     ) : (
-      <motion.span
-        className="absolute border-2 p-1 border-white text-white pointer-events-none"
+      <motion.div
         style={{
           position: "absolute",
           top: "0",
           left: "0",
-          backgroundColor: color,
           translateX: x,
           translateY: y,
         }}
       >
-        <p className="max-w-40 truncate p-1">
-          {nickName ? nickName : "Anonymous"}
-        </p>
-      </motion.span>
+        <span
+          className="absolute border-2 p-1 border-white select-none text-white pointer-events-none"
+          style={{
+            backgroundColor: color,
+          }}
+        >
+          <p className="max-w-40 truncate p-1">
+            {nickName ? nickName : "Anonymous"}
+          </p>
+        </span>
+        <div className="absolute top-10 -left-5 border w-40 h-40 flex items-center justify-center bg-gray-300 rounded-full">
+          <video
+            className=" object-fill w-full h-full "
+            ref={videoRef}
+            autoPlay
+            muted
+            playsInline
+          ></video>
+        </div>
+      </motion.div>
     );
   }
 
@@ -128,11 +147,20 @@ const Cursor = ({
           backgroundColor: color,
         }}
         className={cn(
-          "absolute border-2 p-1 border-white text-white pointer-events-none ",
+          "absolute border-2 p-1 border-white text-white select-none pointer-events-none ",
           isMobile ? "-translate-x-1/2" : "translate-x-4"
         )}
       >
         <p className="max-w-40 truncate p-1">{nickName ? nickName : "Guest"}</p>
+      </div>
+      <div className="absolute top-10 -left-5 border w-40 h-40 flex items-center justify-center bg-gray-300 rounded-full">
+        <video
+          className=" object-fill w-full h-full "
+          ref={videoRef}
+          autoPlay
+          muted
+          playsInline
+        ></video>
       </div>
     </motion.div>
   );

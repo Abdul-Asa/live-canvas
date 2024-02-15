@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@100mslive/react-sdk": "^0.9.5",
     "@liveblocks/client": "^1.9.7",
     "@liveblocks/react": "^1.9.7",
     "@radix-ui/react-dialog": "^1.0.5",

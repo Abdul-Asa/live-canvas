@@ -12,7 +12,7 @@ import {
   Hand,
   Mic,
   MousePointer2,
-  MousePointerIcon,
+  Settings,
   Sticker,
   StickyNote,
   VideoIcon,
@@ -22,10 +22,15 @@ import { panModeAtom } from "@/lib/jotai-state";
 import { useAtom } from "jotai";
 import { Separator } from "../ui/separator";
 import { useState } from "react";
+import { DeviceType, useAVToggle, useDevices } from "@100mslive/react-sdk";
 
 const Toolbar = () => {
   const [panMode, setpanMode] = useAtom(panModeAtom);
   const [trigger, setTrigger] = useState(false);
+  const { allDevices, selectedDeviceIDs, updateDevice } = useDevices();
+  const { videoInput, audioInput, audioOutput } = allDevices;
+  const { isLocalAudioEnabled, isLocalVideoEnabled, toggleAudio, toggleVideo } =
+    useAVToggle();
 
   return (
     <div
@@ -61,7 +66,7 @@ const Toolbar = () => {
       </Button>
       <Button className="w-12 h-12" variant={"icon"} tooltip={"Notes"}>
         <StickyNote />
-      </Button>{" "}
+      </Button>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button className="w-12 h-12" variant={"icon"} tooltip="Stickers">
@@ -103,12 +108,85 @@ const Toolbar = () => {
       </DropdownMenu>
       <Separator className="bg-black lg:hidden" />
       <div className="bg-black h-10 w-[1px] rounded-2xl hidden lg:block " />
-      <Button className="w-12 h-12" variant={"icon"} tooltip="Toggle Video">
+
+      <Button
+        className="w-12 h-12"
+        variant={isLocalVideoEnabled ? "selected" : "icon"}
+        tooltip="Toggle Video"
+        onClick={toggleVideo}
+      >
         <VideoIcon />
       </Button>
-      <Button className="w-12 h-12" variant={"icon"} tooltip="Toggle Audio">
+      <Button
+        className="w-12 h-12"
+        variant={isLocalAudioEnabled ? "selected" : "icon"}
+        tooltip="Toggle Audio"
+        onClick={toggleAudio}
+      >
         <Mic />
       </Button>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button className="w-12 h-12" variant={"icon"} tooltip="Stickers">
+            <Settings />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="border-black p-4 border-2 rounded  overflow-y-scroll">
+          <div>
+            <h1>Device Settings</h1>
+            <Select
+              title="Camera"
+              value={selectedDeviceIDs.videoInput}
+              list={videoInput}
+              onChange={(e) =>
+                updateDevice({
+                  deviceId: e.target.value,
+                  deviceType: DeviceType.videoInput,
+                })
+              }
+            />
+            <Select
+              title="Microphone"
+              value={selectedDeviceIDs.audioInput}
+              list={audioInput}
+              onChange={(e) =>
+                updateDevice({
+                  deviceId: e.target.value,
+                  deviceType: DeviceType.audioInput,
+                })
+              }
+            />
+            <Select
+              title="Speaker"
+              value={selectedDeviceIDs.audioOutput}
+              list={audioOutput}
+              onChange={(e) =>
+                updateDevice({
+                  deviceId: e.target.value,
+                  deviceType: DeviceType.audioOutput,
+                })
+              }
+            />
+          </div>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+  );
+};
+
+const Select = ({ list, value, onChange, title }: any) => {
+  return (
+    <div>
+      <span>{title}:</span>
+      {list?.length ? (
+        <select onChange={onChange} value={value}>
+          {list.map((device) => (
+            <option value={device.deviceId} key={device.deviceId}>
+              {device.label}
+            </option>
+          ))}
+        </select>
+      ) : null}
     </div>
   );
 };

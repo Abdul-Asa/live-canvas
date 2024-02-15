@@ -1,6 +1,8 @@
 import { useViewportSize } from "@/hooks/use-viewport-size";
 import { CANVAS_SIZE } from "@/lib/constants";
-import { cameraAtom, panModeAtom } from "@/lib/jotai-state";
+import { cameraAtom, cursorAtom, panModeAtom } from "@/lib/jotai-state";
+import { useSelf, useUpdateMyPresence } from "@/liveblocks.config";
+import { useVideo } from "@100mslive/react-sdk";
 import { motion } from "framer-motion";
 import { useAtom } from "jotai";
 import { useRef, useState } from "react";
@@ -11,6 +13,20 @@ const CanvasBoard = ({ children }: { children: React.ReactNode }) => {
   const [panMode] = useAtom(panModeAtom);
   const [pos, setCamera] = useAtom(cameraAtom);
   const [isDragging, setIsDragging] = useState(false);
+  const [cursor, setCursorPos] = useAtom(cursorAtom);
+  const {
+    presence: { nickName },
+  } = useSelf();
+  const updateMyPresence = useUpdateMyPresence();
+
+  const updateCursorPos = (event: React.MouseEvent<HTMLDivElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    setCursorPos({ x, y });
+    //online
+    updateMyPresence({ cursor: { x, y } });
+  };
 
   const handleScroll = (event: React.WheelEvent<HTMLDivElement>) => {
     setCamera((prev) => {
@@ -27,9 +43,12 @@ const CanvasBoard = ({ children }: { children: React.ReactNode }) => {
 
       return { x: newX, y: newY };
     });
+    updateCursorPos(event);
   };
 
   const onPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    console.log("onPointerDown");
+    updateCursorPos(event);
     // setSelectedLayer(null);
     if (!panMode) return;
     setIsDragging(true);
@@ -41,7 +60,7 @@ const CanvasBoard = ({ children }: { children: React.ReactNode }) => {
   };
 
   const onPointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
-    // updateCursorPos(event);
+    updateCursorPos(event);
     if (!panMode) return;
     if (!isDragging) return;
     setCamera((prev) => {
