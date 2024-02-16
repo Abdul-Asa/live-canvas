@@ -15,6 +15,7 @@ import {
   Hand,
   Mic,
   MousePointer2,
+  ScreenShare,
   Settings,
   Sticker,
   StickyNote,
@@ -25,7 +26,14 @@ import { panModeAtom } from "@/lib/jotai-state";
 import { useAtom } from "jotai";
 import { Separator } from "../ui/separator";
 import React, { useState } from "react";
-import { DeviceType, useAVToggle, useDevices } from "@100mslive/react-sdk";
+import {
+  DeviceType,
+  selectIsLocalScreenShared,
+  useAVToggle,
+  useDevices,
+  useHMSActions,
+  useHMSStore,
+} from "@100mslive/react-sdk";
 
 const Toolbar = () => {
   const [panMode, setpanMode] = useAtom(panModeAtom);
@@ -34,6 +42,8 @@ const Toolbar = () => {
   const { videoInput, audioInput, audioOutput } = allDevices;
   const { isLocalAudioEnabled, isLocalVideoEnabled, toggleAudio, toggleVideo } =
     useAVToggle();
+  const isScreenShareEnabled = useHMSStore(selectIsLocalScreenShared);
+  const hmsActions = useHMSActions();
 
   return (
     <div
@@ -127,6 +137,20 @@ const Toolbar = () => {
         onClick={toggleAudio}
       >
         <Mic />
+      </Button>
+      <Button
+        className="w-12 h-12"
+        tooltip="Screen share"
+        onClick={async () => {
+          try {
+            await hmsActions.setScreenShareEnabled(!isScreenShareEnabled);
+          } catch (e) {
+            alert(e);
+          }
+        }}
+        variant={isScreenShareEnabled ? "selected" : "icon"}
+      >
+        <ScreenShare />
       </Button>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>

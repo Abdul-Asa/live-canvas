@@ -2,7 +2,9 @@ import { cn } from "@/lib/utils";
 import {
   HMSPeer,
   selectIsPeerVideoEnabled,
+  selectScreenShareByPeerID,
   useHMSStore,
+  useScreenShare,
   useVideo,
 } from "@100mslive/react-sdk";
 import { motion } from "framer-motion";
@@ -27,6 +29,11 @@ const Cursor = ({
   const videoEnabled = useHMSStore(selectIsPeerVideoEnabled(peer?.id));
   const { videoRef } = useVideo({
     trackId: peer?.videoTrack,
+  });
+  const { screenShareVideoTrackId, amIScreenSharing } = useScreenShare();
+  const isPeerSharingScreen = useHMSStore(selectScreenShareByPeerID(peer?.id));
+  const screenRef = useVideo({
+    trackId: screenShareVideoTrackId,
   });
 
   if (isClient) {
@@ -69,6 +76,17 @@ const Cursor = ({
             ></video>
           </div>
         )}
+        {amIScreenSharing && (
+          <div className="absolute top-10 -left-5 -translate-x-full border w-40 h-40 flex items-center justify-center bg-gray-300 rounded-full">
+            <video
+              className="object-cover w-full h-full rounded-full"
+              ref={screenRef.videoRef}
+              autoPlay
+              muted
+              playsInline
+            ></video>
+          </div>
+        )}
       </motion.div>
     ) : (
       <motion.div
@@ -95,6 +113,17 @@ const Cursor = ({
             <video
               className="object-cover w-full h-full rounded-full"
               ref={videoRef}
+              autoPlay
+              muted
+              playsInline
+            ></video>
+          </div>
+        )}
+        {amIScreenSharing && (
+          <div className="absolute top-10 -left-5 -translate-x-full border w-40 h-40 flex items-center justify-center bg-gray-300 rounded-full">
+            <video
+              className="object-cover w-full h-full rounded-full"
+              ref={screenRef.videoRef}
               autoPlay
               muted
               playsInline
@@ -175,6 +204,17 @@ const Cursor = ({
           <video
             className="object-cover w-full h-full rounded-full"
             ref={videoRef}
+            autoPlay
+            muted
+            playsInline
+          ></video>
+        </div>
+      )}
+      {isPeerSharingScreen && (
+        <div className="absolute top-10 -left-5 -translate-x-full border w-40 h-40 flex items-center justify-center bg-gray-300 rounded-full">
+          <video
+            className="object-cover w-full h-full rounded-full"
+            ref={screenRef.videoRef}
             autoPlay
             muted
             playsInline
