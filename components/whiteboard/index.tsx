@@ -17,6 +17,7 @@ import {
   selectLocalPeer,
   selectRemotePeers,
 } from "@100mslive/react-sdk";
+import { useUpdateMyPresence } from "@/liveblocks.config";
 
 const Whiteboard = () => {
   const isMobile = useIsMobile();
@@ -24,7 +25,12 @@ const Whiteboard = () => {
   const [cursor] = useAtom(cursorAtom);
   const isConnected = useHMSStore(selectIsConnectedToRoom);
   const hmsActions = useHMSActions();
+  const updateMobileState = useUpdateMyPresence();
   const localPeer = useHMSStore(selectLocalPeer);
+  useIsMobile((bro: boolean) => {
+    updateMobileState({ isMobile: bro });
+    console.log("isMobile", bro);
+  });
 
   useDisableScrollBounce();
 

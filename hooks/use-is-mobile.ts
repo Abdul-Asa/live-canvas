@@ -2,7 +2,7 @@ import { deviceInfoAtom } from "@/lib/jotai-state";
 import { useAtom } from "jotai";
 import { useEffect } from "react";
 
-function useIsMobile() {
+function useIsMobile(updateOnlineStatus?: (newStatus: boolean) => void) {
   const [{ isMobile }, setIsMobile] = useAtom(deviceInfoAtom);
 
   useEffect(() => {
@@ -13,6 +13,10 @@ function useIsMobile() {
         /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
           userAgent
         );
+
+      if (updateOnlineStatus) {
+        updateOnlineStatus(mobile);
+      }
 
       setIsMobile((prev) => ({
         ...prev,

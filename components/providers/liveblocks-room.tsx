@@ -9,7 +9,7 @@ import useIsMobile from "@/hooks/use-is-mobile";
 
 export function Room({ children }: { children: ReactNode }) {
   const userState = useAtomValue(userAtom);
-  const [{ isMobile }] = useAtom(deviceInfoAtom);
+  const isMobile = useIsMobile();
 
   return (
     <RoomProvider
