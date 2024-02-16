@@ -31,7 +31,7 @@ const Whiteboard = () => {
   useEffect(() => {
     async function loginToVideoRoom() {
       const authToken = await hmsActions.getAuthTokenByRoomCode({
-        roomCode: "hfq-hywl-tvu",
+        roomCode: "txo-ywrn-mle",
       });
       try {
         await hmsActions.join({
