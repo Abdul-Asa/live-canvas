@@ -10,13 +10,16 @@ import { cursorAtom, userAtom } from "@/lib/jotai-state";
 import OtherCursors from "./other-cursors";
 import { useEffect } from "react";
 import MiniMap from "./minimap";
+import { useOthers } from "@/liveblocks.config";
 import {
   useHMSStore,
   selectIsConnectedToRoom,
   useHMSActions,
   selectLocalPeer,
-  selectRemotePeers,
 } from "@100mslive/react-sdk";
+import { Button } from "../ui/button";
+import { HomeIcon } from "lucide-react";
+import Link from "next/link";
 
 const Whiteboard = () => {
   const isMobile = useIsMobile();
@@ -25,13 +28,14 @@ const Whiteboard = () => {
   const isConnected = useHMSStore(selectIsConnectedToRoom);
   const hmsActions = useHMSActions();
   const localPeer = useHMSStore(selectLocalPeer);
+  const capacity = useOthers().length;
 
   useDisableScrollBounce();
 
   useEffect(() => {
     async function loginToVideoRoom() {
       const authToken = await hmsActions.getAuthTokenByRoomCode({
-        roomCode: "txo-ywrn-mle",
+        roomCode: process.env.NEXT_PUBLIC_HMS_ROOM_ID as string,
       });
       try {
         await hmsActions.join({
@@ -72,6 +76,15 @@ const Whiteboard = () => {
       </CanvasBoard>
       <Toolbar />
       <MiniMap />
+      <Link href={"/"}>
+        <Button
+          className="absolute bottom-4 right-4 border-2 border-black bg-primary-light"
+          variant="icon"
+          onClick={() => hmsActions.leave()}
+        >
+          <HomeIcon />
+        </Button>
+      </Link>
     </div>
   );
 };

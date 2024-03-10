@@ -64,11 +64,13 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
-            <Comp
-              className={cn(buttonVariants({ variant, size, className }))}
-              ref={ref}
-              {...props}
-            />
+            <span tabIndex={0}>
+              <Comp
+                className={cn(buttonVariants({ variant, size, className }))}
+                ref={ref}
+                {...props}
+              />
+            </span>
           </TooltipTrigger>
           <TooltipContent>
             <p className="text-[10px]">{tooltip}</p>

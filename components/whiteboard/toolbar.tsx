@@ -15,6 +15,7 @@ import {
   Hand,
   Mic,
   MousePointer2,
+  PencilIcon,
   ScreenShare,
   Settings,
   Sticker,
@@ -77,12 +78,25 @@ const Toolbar = () => {
       >
         <Hand />
       </Button>
-      <Button className="w-12 h-12" variant={"icon"} tooltip={"Notes"}>
+      <Button
+        className="w-12 h-12"
+        disabled
+        variant={"icon"}
+        tooltip={"Coming soon!"}
+      >
+        <PencilIcon />
+      </Button>
+      <Button
+        className="w-12 h-12"
+        disabled
+        variant={"icon"}
+        tooltip={"Coming soon!"}
+      >
         <StickyNote />
       </Button>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button className="w-12 h-12" variant={"icon"} tooltip="Stickers">
+          <Button className="w-12 h-12" variant={"icon"}>
             <Sticker />
           </Button>
         </DropdownMenuTrigger>
@@ -92,6 +106,7 @@ const Toolbar = () => {
               <DropdownMenuItem
                 key={index}
                 className="border-2 border-gray-300 h-20 w-20 aspect-square"
+                disabled
                 // onClick={() => addSticker(link)}
               >
                 <img
@@ -104,6 +119,7 @@ const Toolbar = () => {
             {LOTTIE_LINKS.map((link, index) => (
               <DropdownMenuItem
                 key={index}
+                disabled
                 className="border-2 border-gray-300 h-20 w-20 aspect-square"
                 // onClick={() => addSticker(link)}
               >
@@ -140,14 +156,15 @@ const Toolbar = () => {
       </Button>
       <Button
         className="w-12 h-12"
-        tooltip="Screen share"
-        onClick={async () => {
-          try {
-            await hmsActions.setScreenShareEnabled(!isScreenShareEnabled);
-          } catch (e) {
-            alert(e);
-          }
-        }}
+        disabled
+        tooltip="Coming soon!"
+        // onClick={async () => {
+        //   try {
+        //     await hmsActions.setScreenShareEnabled(!isScreenShareEnabled);
+        //   } catch (e) {
+        //     alert(e);
+        //   }
+        // }}
         variant={isScreenShareEnabled ? "selected" : "icon"}
       >
         <ScreenShare />
