@@ -1,10 +1,12 @@
 "use client";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { userAtom } from "@/lib/jotai-state";
 // import { useHMSActions } from "@100mslive/react-sdk";
 import { useAtom } from "jotai";
+import { InfoIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { TwitterPicker } from "react-color";
 
@@ -15,7 +17,6 @@ export default function Home() {
 
   //Add chat
   //Make my own color picker component
-  //add video chat
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
@@ -34,7 +35,18 @@ export default function Home() {
   };
 
   return (
-    <main className="flex flex-col h-screen justify-center items-center py-24">
+    <main className="flex flex-col h-screen overflow-scroll mx-auto items-center p-4 lg:py-16">
+      <Alert className="lg:w-1/2 mb-10">
+        <InfoIcon className="h-4 w-4" />
+        <AlertTitle>Heads up!</AlertTitle>
+        <AlertDescription className=" text-sm">
+          While I&apos;ve put in a significant amount of effort to ensure
+          security, keep in mind that this is a public canvas accessible to
+          anyone. When testing the video/audio features, be mindful of other
+          users online. <br /> I do not store/record any video,audio or data.
+          This is strictly a demo project.
+        </AlertDescription>
+      </Alert>
       <h1 className="lg:text-5xl font-extrabold leading-tight text-3xl">
         Live Whiteboard
       </h1>

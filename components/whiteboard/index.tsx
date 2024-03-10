@@ -76,6 +76,11 @@ const Whiteboard = () => {
       </CanvasBoard>
       <Toolbar />
       <MiniMap />
+      <div className="absolute top-4 left-4 p-2 border-2 border-black bg-primary-light">
+        <p>
+          Others online:<span>{capacity}</span>
+        </p>
+      </div>
       <Link href={"/"}>
         <Button
           className="absolute bottom-4 right-4 border-2 border-black bg-primary-light"

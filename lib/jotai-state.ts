@@ -1,8 +1,9 @@
 import { atom } from "jotai";
+import { generate, count } from "random-words";
 
 const userAtom = atom({
   color: "#000000",
-  nickName: "Guest:" + crypto.randomUUID().slice(0, 5),
+  nickName: "id:" + generate() + count({ maxLength: 3 }),
 });
 
 const deviceInfoAtom = atom({
